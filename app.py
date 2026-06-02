@@ -13,6 +13,7 @@ import subprocess, os, datetime, tempfile, json, re, time
 import zipfile, traceback, struct, math
 from io import BytesIO
 from PIL import Image, ImageFilter, ImageEnhance, ImageOps
+from auth import is_authenticated, show_activation_gate
 
 # ─────────────────────────────────────────────────────────────
 # Tool binary resolver
@@ -42,6 +43,11 @@ FFPROBE = _find_bin("ffprobe")
 # Page config & global CSS
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(page_title="ALL APP IN ONE", page_icon="🚀", layout="wide")
+
+# ── Activation gate — blocks everything below if not authenticated ──
+if not is_authenticated():
+    show_activation_gate()
+    st.stop()
 
 st.markdown("""
 <style>
@@ -467,7 +473,7 @@ with tab_vg:
         if vname=="5" and ovl:
             cmd = ffmpeg_prefix(hw)+["-i",inp,"-i",ovl]
             fc = (f"[0:v]{base_vf}[base];[1:v]scale={TARGET_W}:{TARGET_H}[ov];"
-                  f"[base][ov]overlay=0:0[vout];{audio_filters('[0:a]')}[aout]")
+                  f"[base][ov]overlay=0:0[vout];{audio_filters(amode,'[0:a]')}[aout]")
             return cmd+["-filter_complex",fc,"-map","[vout]","-map","[aout]"]+vc+ao+[out], br, get_duration(inp)
 
         if htype=="None":
@@ -478,7 +484,7 @@ with tab_vg:
                     "-f","lavfi","-t",str(intro_s),"-i","anullsrc=channel_layout=stereo:sample_rate=44100",
                     "-i",inp,
                     "-filter_complex",
-                    f"[2:v]{base_vf}[vm];{audio_filters('[2:a]')}[am];"
+                    f"[2:v]{base_vf}[vm];{audio_filters(amode,'[2:a]')}[am];"
                     f"[0:v][1:a][vm][am]concat=n=2:v=1:a=1[vout][aout]",
                     "-map","[vout]","-map","[aout]",
                 ]+vc+ao+[out]
@@ -491,7 +497,7 @@ with tab_vg:
             cmd = ffmpeg_prefix(hw)+["-i",inp,"-loop","1","-t",str(hdur),"-i",himg]
             fc = (f"[0:v]{base_vf}[base];[1:v][base]scale2ref=w=iw:h=ih[img][b2];"
                   f"[b2][img]overlay=(W-w)/2:(H-h)/2:enable='between(t,0,{hdur})'[vout];"
-                  f"{audio_filters('[0:a]')}[aout]")
+                  f"{audio_filters(amode,'[0:a]')}[aout]")
             return cmd+["-filter_complex",fc,"-map","[vout]","-map","[aout]"]+vc+ao+[out],br,get_duration(inp)
 
         if htype=="Video prepend":
@@ -499,8 +505,8 @@ with tab_vg:
             tnorm=(f"scale={TARGET_W}:{TARGET_H}:force_original_aspect_ratio=decrease,"
                    f"pad={TARGET_W}:{TARGET_H}:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p,fps={out_fps}")
             fc = f"[0:v]{tnorm}[vh];[1:v]{base_vf}[vm];"
-            fc += f"{audio_filters('[0:a]')}[ah];" if hkeep else "anullsrc=channel_layout=stereo:sample_rate=44100[ah];"
-            fc += f"{audio_filters('[1:a]')}[am];[vh][ah][vm][am]concat=n=2:v=1:a=1[vout][aout]"
+            fc += f"{audio_filters(amode,'[0:a]')}[ah];" if hkeep else "anullsrc=channel_layout=stereo:sample_rate=44100[ah];"
+            fc += f"{audio_filters(amode,'[1:a]')}[am];[vh][ah][vm][am]concat=n=2:v=1:a=1[vout][aout]"
             return cmd+["-filter_complex",fc,"-map","[vout]","-map","[aout]"]+vc+ao+[out],br,get_duration(hvid)+get_duration(inp)
 
         if htype=="Video overlay":
@@ -509,7 +515,7 @@ with tab_vg:
                    f"pad={TARGET_W}:{TARGET_H}:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p,fps={out_fps}")
             fc = (f"[0:v]{base_vf}[base];[1:v]{tnorm}[hv];"
                   f"[base][hv]overlay=(W-w)/2:(H-h)/2:enable='between(t,0,{hdur})'[vout];"
-                  f"{audio_filters('[0:a]')}[aout]")
+                  f"{audio_filters(amode,'[0:a]')}[aout]")
             return cmd+["-filter_complex",fc,"-map","[vout]","-map","[aout]"]+vc+ao+[out],br,get_duration(inp)
 
         cmd = ffmpeg_prefix(hw)+["-i",inp,"-vf",base_vf,"-r",str(out_fps),"-map","0:v:0","-map","0:a?"]+vc+ao+[out]
