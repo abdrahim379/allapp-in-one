@@ -78,11 +78,11 @@ def _is_tiktok(url: str) -> bool:
     return isinstance(url, str) and "tiktok.com" in url
 
 
-@app.post("/api/tiktok/extract")
+@app.route("/api/tiktok/extract", methods=["GET", "POST"])
 def tiktok_extract():
     if not _token_ok():
         return _deny()
-    url = (request.get_json(silent=True) or {}).get("url", "").strip()
+    url = ((request.get_json(silent=True) or {}).get("url") or request.args.get("url", "")).strip()
     if not _is_tiktok(url):
         return jsonify(error="Please enter a valid TikTok URL."), 400
 

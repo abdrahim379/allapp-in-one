@@ -48,8 +48,6 @@ export async function decodeToCanvas(file) {
   return c;
 }
 
-const hasAlpha = (data) => { for (let i = 3; i < data.length; i += 4) if (data[i] !== 255) return true; return false; };
-
 // Same math as PIL ImageEnhance.Color(1.15) then ImageEnhance.Contrast(1.05).
 function colorBoost(ctx, w, h) {
   const id = ctx.getImageData(0, 0, w, h), d = id.data;
