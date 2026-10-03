@@ -171,9 +171,10 @@ if __name__ == "__main__":
     PUBLIC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public")
 
     @app.after_request
-    def _isolation(resp):  # mirror vercel.json headers
-        resp.headers["Cross-Origin-Opener-Policy"] = "same-origin"
-        resp.headers["Cross-Origin-Embedder-Policy"] = "credentialless"
+    def _isolation(resp):  # mirror vercel.json headers (NO_ISOLATION=1 → single-thread path)
+        if not os.environ.get("NO_ISOLATION"):
+            resp.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+            resp.headers["Cross-Origin-Embedder-Policy"] = "credentialless"
         return resp
 
     @app.get("/")

@@ -37,6 +37,17 @@ export function withFF(fn) {
 
 const TIME_RE = /time=(\d+):(\d+):(\d+(?:\.\d+)?)/;
 
+// ffmpeg sizes filter/decoder thread pools from the CPU count; in the wasm build that
+// exhausts the fixed pthread pool and deadlocks (seen with 2+ inputs). Keep them small.
+function capThreads(args) {
+  const out = ["-filter_threads", "2", "-filter_complex_threads", "2"];
+  for (const a of args) {
+    if (a === "-i") out.push("-threads", "2");
+    out.push(a);
+  }
+  return out;
+}
+
 // Run ffmpeg args; onLog(line), onProgress(pct 0-100) using expected duration.
 export async function run(f, args, { totalSecs = 0, onLog, onProgress } = {}) {
   logSink = (line) => {
@@ -48,7 +59,7 @@ export async function run(f, args, { totalSecs = 0, onLog, onProgress } = {}) {
     }
   };
   try {
-    const rc = await f.exec(args);
+    const rc = await f.exec(isMultiThread() ? capThreads(args) : args);
     onProgress && onProgress(rc === 0 ? 100 : 0);
     return rc;
   } finally {

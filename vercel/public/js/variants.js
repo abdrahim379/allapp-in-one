@@ -61,8 +61,9 @@ export function buildArgs(o) {
   const A0 = audioIn(0, meta, v.audio);
 
   if (v.name === "5" && ovl) {
-    const fc = `[0:v]${baseVf}[base];[1:v]scale=${TW}:${TH}[ov];[base][ov]overlay=0:0[vout];${A0}[aout]`;
-    return { args: ["-i", inp, "-i", ovl, "-filter_complex", fc, ...tail], est: dur };
+    // Looped still + shortest=1: a single-frame PNG input deadlocks ffmpeg.wasm when audio is mapped.
+    const fc = `[0:v]${baseVf}[base];[1:v]scale=${TW}:${TH}[ov];[base][ov]overlay=0:0:shortest=1[vout];${A0}[aout]`;
+    return { args: ["-i", inp, "-loop", "1", "-i", ovl, "-filter_complex", fc, ...tail], est: dur };
   }
 
   if (htype === "None") {
