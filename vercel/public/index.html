@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALL APP IN ONE</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    { "imports": { "wasm-feature-detect": "/vendor/wasm-feature-detect/index.js" } }
+  </script>
+  <script src="/vendor/jszip.min.js"></script>
+  <script src="/vendor/pica.min.js"></script>
+  <script src="/vendor/UTIF.js"></script>
+</head>
+<body>
+  <!-- ── Activation gate ─────────────────────────────── -->
+  <section id="gate" class="gate" hidden>
+    <div class="lock-box">
+      <div class="lock-icon">🔐</div>
+      <h1>ALL APP IN ONE</h1>
+      <p class="muted">This tool is private.<br>Enter your activation code to get lifetime access.</p>
+      <form id="gate-form">
+        <input id="gate-code" placeholder="ALLAPP-XXXX-XXXX" maxlength="20" autocomplete="off" spellcheck="false">
+        <button class="btn primary wide" type="submit">🔓 Activate</button>
+      </form>
+      <div id="gate-msg" class="msg"></div>
+      <p class="tiny">Once activated, bookmark the URL — your access is permanent.</p>
+    </div>
+  </section>
+
+  <!-- ── App ─────────────────────────────────────────── -->
+  <main id="app" hidden>
+    <header class="hero">
+      <h1>🚀 ALL APP IN ONE</h1>
+      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler</p>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="home" aria-selected="true">🏠 Home</button>
+      <button role="tab" data-tab="dl">📥 TikTok Downloader</button>
+      <button role="tab" data-tab="vg">🎛️ Variant Generator</button>
+      <button role="tab" data-tab="img">🖼️ Image Optimizer</button>
+      <button role="tab" data-tab="webp">🔄 → WebP</button>
+      <button role="tab" data-tab="up">🎬 Video Upscaler</button>
+    </nav>
+
+    <!-- HOME -->
+    <section class="panel" data-panel="home">
+      <h2>Welcome to All App In One</h2>
+      <p class="muted">Pick a tool from the tabs above. Here's what each one does:</p>
+      <div class="grid2">
+        <div class="tool-card" data-go="dl"><h3>📥 TikTok Downloader</h3><p>Extract &amp; download TikTok videos from any profile or hashtag URL. Grid and List view, ZIP export.</p></div>
+        <div class="tool-card" data-go="vg"><h3>🎛️ Variant Generator</h3><p>Generate up to 5 TikTok video variants (120fps · 4000kbps · 1080×1920) with hooks, zoom, pitch.</p></div>
+        <div class="tool-card" data-go="img"><h3>🖼️ Image Optimizer <span class="badge">NEW</span></h3><p>Upscale images 1.5×–4× using LANCZOS resampling + smart sharpening. Keep quality, increase resolution.</p></div>
+        <div class="tool-card" data-go="webp"><h3>🔄 → WebP Converter <span class="badge">NEW</span></h3><p>Convert PNG, JPG, BMP, TIFF, GIF → WebP. Batch processing, quality control, lossless mode.</p></div>
+        <div class="tool-card" data-go="up"><h3>🎬 Video Upscaler <span class="badge">NEW</span></h3><p>Upscale videos to 720p / 1080p / 4K with ffmpeg LANCZOS + optional sharpen + denoise.</p></div>
+      </div>
+      <hr>
+      <div class="metrics">
+        <div class="metric"><span>Tools available</span><b>6</b></div>
+        <div class="metric"><span>Video formats</span><b>MP4 · MOV · M4V</b></div>
+        <div class="metric"><span>Image formats</span><b>PNG · JPG · WebP · BMP · TIFF</b></div>
+        <div class="metric"><span>Max quality</span><b>120fps · 4K</b></div>
+      </div>
+      <p class="note">🔒 Your videos and images are processed <b>in your browser</b> — they are never uploaded. Video tools download the ffmpeg engine (~30&nbsp;MB) the first time.</p>
+      <p class="tiny"><a href="#" id="logout">Sign out of this browser</a></p>
+    </section>
+
+    <!-- TIKTOK DOWNLOADER -->
+    <section class="panel" data-panel="dl" hidden>
+      <h2>📥 TikTok Video Extractor &amp; Downloader</h2>
+      <p class="muted">Paste any TikTok profile, hashtag or video URL. Choose <b>Grid</b> or <b>List</b> view.</p>
+      <h3>Step 1 — Extract</h3>
+      <form id="dl-form" class="row">
+        <input id="dl-url" class="grow" placeholder="https://www.tiktok.com/@username or /tag/hashtag">
+        <button class="btn" type="submit" id="dl-extract">🔍 Extract</button>
+      </form>
+      <div id="dl-msg" class="msg"></div>
+      <div id="dl-step2" hidden>
+        <hr>
+        <h3>Step 2 — Browse &amp; Select</h3>
+        <div class="row wrap">
+          <button class="btn" id="dl-all">✅ Select All</button>
+          <button class="btn" id="dl-none">❌ Deselect All</button>
+          <select id="dl-view"><option>Grid</option><option>List</option></select>
+          <input id="dl-filter" class="grow" placeholder="🔍 Filter by title…">
+        </div>
+        <div id="dl-list"></div>
+        <hr>
+        <h3>Step 3 — Download</h3>
+        <div class="info" id="dl-count">0 video(s) selected</div>
+        <button class="btn primary wide" id="dl-go" disabled>📥 Download 0 Video(s) as ZIP</button>
+        <div class="progress" id="dl-prog" hidden><div></div></div>
+        <div id="dl-status" class="msg"></div>
+      </div>
+    </section>
+
+    <!-- VARIANT GENERATOR -->
+    <section class="panel" data-panel="vg" hidden>
+      <h2>🎛️ TikTok Variant Generator</h2>
+      <p class="muted">Generate up to <b>5 variants</b> (120fps · 4000kbps · 1080×1920) with hooks, zoom, pitch.</p>
+      <details open class="box"><summary>⚙️ Settings</summary>
+        <div class="grid2">
+          <div>
+            <label>🎛️ Preset
+              <select id="vg-preset">
+                <option value="custom">Custom</option>
+                <option value="quick">⚡ Quick TikTok (V1 only)</option>
+                <option value="viral">🔥 Viral Pack (V1-V4)</option>
+                <option value="ultra">🎯 Ultra (All V1-V5)</option>
+              </select></label>
+            <fieldset><legend>Creative zoom</legend>
+              <label class="inline"><input type="radio" name="vg-zoom" value="zoom + crop" checked> zoom + crop</label>
+              <label class="inline"><input type="radio" name="vg-zoom" value="zoom inverse + pad"> zoom inverse + pad</label>
+              <label class="inline"><input type="radio" name="vg-zoom" value="none"> none</label>
+            </fieldset>
+            <label>Output frame rate
+              <select id="vg-fps"><option value="120" selected>120 fps (original spec)</option><option value="60">60 fps (faster)</option><option value="30">30 fps (fastest)</option></select></label>
+          </div>
+          <div>
+            <fieldset><legend>Variants to generate</legend>
+              <label class="inline"><input type="checkbox" class="vg-v" value="1" checked> 1</label>
+              <label class="inline"><input type="checkbox" class="vg-v" value="2" checked> 2</label>
+              <label class="inline"><input type="checkbox" class="vg-v" value="3" checked> 3</label>
+              <label class="inline"><input type="checkbox" class="vg-v" value="4" checked> 4</label>
+              <label class="inline"><input type="checkbox" class="vg-v" value="5"> 5</label>
+              <div class="tiny">1=Base | 2=+Intro+Hook | 3=+Pitch+1% | 4=+Pitch-1% | 5=Overlay</div>
+            </fieldset>
+            <label>Hook type
+              <select id="vg-htype"><option>None</option><option>Image overlay</option><option>Video prepend</option><option>Video overlay</option></select></label>
+          </div>
+        </div>
+      </details>
+      <details class="box" id="vg-hooks"><summary>🎣 Hook &amp; Overlay files</summary>
+        <label id="vg-himg-wrap" hidden>Hook image <input type="file" id="vg-himg" accept=".png,.jpg,.jpeg"></label>
+        <label id="vg-hvid-wrap" hidden>Hook video <input type="file" id="vg-hvid" accept=".mp4,.mov,.m4v,video/*"></label>
+        <label id="vg-hkeep-wrap" class="inline" hidden><input type="checkbox" id="vg-hkeep" checked> Keep hook audio</label>
+        <label>V5 Overlay PNG (transparent) <input type="file" id="vg-ovl" accept=".png"></label>
+      </details>
+      <h3>📥 Videos</h3>
+      <div class="drop"><input type="file" id="vg-files" accept=".mp4,.mov,.m4v,video/*" multiple><span>Drop videos here or click to browse</span></div>
+      <button class="btn primary wide" id="vg-go">🚀 Generate Variants</button>
+      <div id="vg-out"></div>
+      <table class="tbl" id="vg-help">
+        <tr><th>#</th><th>What it does</th></tr>
+        <tr><td>1</td><td>Base — 120fps, 4000kbps</td></tr>
+        <tr><td>2</td><td>+ Invisible 0.01s intro + Hook</td></tr>
+        <tr><td>3</td><td>V2 + Audio pitch <b>+1%</b></td></tr>
+        <tr><td>4</td><td>V2 + Audio pitch <b>−1%</b></td></tr>
+        <tr><td>5</td><td>+ Custom overlay / border PNG</td></tr>
+      </table>
+    </section>
+
+    <!-- IMAGE OPTIMIZER -->
+    <section class="panel" data-panel="img" hidden>
+      <h2>🖼️ Image Optimizer — Upscale &amp; Enhance</h2>
+      <p class="muted">Upload images, choose upscale factor, apply smart sharpening and color enhancement.</p>
+      <div class="grid3">
+        <div>
+          <fieldset><legend>Scale mode</legend>
+            <label class="inline"><input type="radio" name="io-mode" value="factor" checked> Factor (×)</label>
+            <label class="inline"><input type="radio" name="io-mode" value="custom"> Custom size</label>
+          </fieldset>
+          <label id="io-factor-wrap">Scale factor
+            <select id="io-factor"><option>1.5</option><option selected>2</option><option>2.5</option><option>3</option><option>4</option></select></label>
+          <div id="io-custom-wrap" hidden>
+            <label>Width (px) <input type="number" id="io-w" min="100" max="8000" value="1920"></label>
+            <label>Height (px) <input type="number" id="io-h" min="100" max="8000" value="1080"></label>
+          </div>
+        </div>
+        <div>
+          <label>Output format <select id="io-fmt"><option>JPEG</option><option>PNG</option><option>WEBP</option></select></label>
+          <label>Quality (JPEG/WebP) <output id="io-q-v">90</output><input type="range" id="io-q" min="60" max="100" value="90"></label>
+          <label class="inline"><input type="checkbox" id="io-sharp" checked> Smart sharpen</label>
+          <label>Sharpen amount <output id="io-sa-v">150</output><input type="range" id="io-sa" min="50" max="300" value="150"></label>
+        </div>
+        <div>
+          <label class="inline"><input type="checkbox" id="io-color"> Color + Contrast boost</label>
+          <hr>
+          <b>What this does:</b>
+          <ul><li>LANCZOS resampling (best algorithm)</li><li>Unsharp mask sharpening</li><li>Optional color/contrast boost</li></ul>
+        </div>
+      </div>
+      <div class="drop"><input type="file" id="io-files" accept=".png,.jpg,.jpeg,.bmp,.tiff,.tif,.webp,image/*" multiple><span>Upload images (PNG · JPG · JPEG · BMP · TIFF · WebP)</span></div>
+      <button class="btn primary wide" id="io-go">🚀 Optimize All</button>
+      <div id="io-msg" class="msg"></div>
+      <div id="io-out" class="thumbs"></div>
+    </section>
+
+    <!-- WEBP -->
+    <section class="panel" data-panel="webp" hidden>
+      <h2>🔄 Image → WebP Converter</h2>
+      <p class="muted">Batch convert any image format to <b>WebP</b> — smaller files, same quality.</p>
+      <div class="grid2">
+        <div>
+          <label>WebP quality <output id="wp-q-v">82</output><input type="range" id="wp-q" min="50" max="100" value="82"></label>
+          <label class="inline" title="Lossless = perfect quality but larger file. Best for PNG with transparency."><input type="checkbox" id="wp-lossless"> Lossless mode</label>
+        </div>
+        <div>
+          <b>WebP advantages:</b>
+          <ul><li>~30% smaller than JPEG at same quality</li><li>~25% smaller than PNG</li><li>Supports transparency (like PNG)</li><li>Supported by all modern browsers</li></ul>
+        </div>
+      </div>
+      <div class="drop"><input type="file" id="wp-files" accept=".png,.jpg,.jpeg,.bmp,.tiff,.tif,.gif,.webp,image/*" multiple><span>Upload images (any format)</span></div>
+      <button class="btn primary wide" id="wp-go">🔄 Convert All → WebP</button>
+      <div id="wp-msg" class="msg"></div>
+      <div id="wp-out"></div>
+    </section>
+
+    <!-- VIDEO UPSCALER -->
+    <section class="panel" data-panel="up" hidden>
+      <h2>🎬 Video Upscaler — Auto Pixel &amp; Quality Enhancement</h2>
+      <p class="muted">Upload any video. The app <b>automatically</b> analyzes it and applies a <b>5-stage enhancement pipeline</b> — no settings needed.</p>
+      <div class="pipeline">
+        <div><i>🧹</i><b>Stage 1</b><span>Deblock &amp;<br>Denoise</span></div><em>→</em>
+        <div><i>✨</i><b>Stage 2</b><span>Pre-Sharpen<br>(text &amp; edges)</span></div><em>→</em>
+        <div><i>🔍</i><b>Stage 3</b><span>LANCZOS<br>Upscale</span></div><em>→</em>
+        <div><i>🎯</i><b>Stage 4</b><span>Post-Sharpen<br>(restore detail)</span></div><em>→</em>
+        <div><i>🎨</i><b>Stage 5</b><span>Color &amp;<br>Contrast Boost</span></div>
+      </div>
+      <div class="grid2">
+        <label>Target resolution
+          <select id="up-target">
+            <option value="auto">🤖 Auto (smart detect)</option>
+            <option value="1280:720">720p  (1280×720)</option>
+            <option value="1920:1080">1080p (1920×1080)</option>
+            <option value="2560:1440">1440p (2560×1440)</option>
+            <option value="3840:2160">4K    (3840×2160)</option>
+          </select></label>
+        <label>Enhancement strength
+          <select id="up-mode">
+            <option value="max">🔥 Maximum (recommended)</option>
+            <option value="bal">⚡ Balanced</option>
+            <option value="light">🌿 Light (fast)</option>
+          </select></label>
+      </div>
+      <details class="box"><summary>⚙️ Advanced options (optional)</summary>
+        <div class="grid3">
+          <div>
+            <label>Denoise strength <output id="up-dn-v">1.5</output><input type="range" id="up-dn" min="0" max="4" step="0.5" value="1.5"></label>
+            <label>Pre-sharpen (before upscale) <output id="up-pre-v">1</output><input type="range" id="up-pre" min="0" max="2" step="0.1" value="1"></label>
+          </div>
+          <div>
+            <label>Post-sharpen (after upscale) <output id="up-post-v">0.6</output><input type="range" id="up-post" min="0" max="1.5" step="0.1" value="0.6"></label>
+            <label>Contrast boost <output id="up-con-v">1.06</output><input type="range" id="up-con" min="1" max="1.2" step="0.01" value="1.06"></label>
+          </div>
+          <div>
+            <label>Saturation boost <output id="up-sat-v">1.1</output><input type="range" id="up-sat" min="1" max="1.3" step="0.01" value="1.10"></label>
+            <label>Brightness <output id="up-br-v">0.01</output><input type="range" id="up-br" min="-0.1" max="0.1" step="0.01" value="0.01"></label>
+            <label>Encoding preset <select id="up-preset"><option>veryfast</option><option>fast</option><option selected>medium</option><option>slow</option></select></label>
+          </div>
+        </div>
+      </details>
+      <div class="drop"><input type="file" id="up-file" accept=".mp4,.mov,.m4v,.avi,.mkv,.flv,.wmv,video/*"><span>🎬 Drop your video here</span></div>
+      <button class="btn primary wide" id="up-go">🚀 Auto-Enhance &amp; Upscale</button>
+      <div id="up-out"></div>
+      <table class="tbl">
+        <tr><th>Stage</th><th>What it does</th><th>Why it matters</th></tr>
+        <tr><td>🧹 Denoise</td><td>Removes H.264/H.265 compression blocks &amp; noise</td><td>Prevents upscaling artifacts from being magnified</td></tr>
+        <tr><td>✨ Pre-sharpen</td><td>Sharpens edges &amp; text BEFORE upscale</td><td>Text stays crisp after resize</td></tr>
+        <tr><td>🔍 LANCZOS</td><td>Best-quality upscaling algorithm with full chroma accuracy</td><td>Sharpest pixels possible</td></tr>
+        <tr><td>🎯 Post-sharpen</td><td>Restores perceived sharpness after resize</td><td>Counters softness introduced by scaling</td></tr>
+        <tr><td>🎨 Color boost</td><td>Contrast +6%, saturation +10%, gamma 1.02</td><td>Vibrant, professional-looking output</td></tr>
+      </table>
+      <p class="tiny">Auto: ≤360p → 720p · ≤720p → 1080p · ≤1080p → 1440p · &gt;1080p → 4K</p>
+    </section>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
