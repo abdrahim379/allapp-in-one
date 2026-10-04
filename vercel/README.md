@@ -1,5 +1,7 @@
 # 🚀 ALL APP IN ONE — Vercel edition
 
+**Live:** https://allapp-in-one.vercel.app (Vercel project `allapp-in-one`)
+
 A copy of the Streamlit app, rebuilt to run on **Vercel**. Every tool from the
 Streamlit version is here, behind the same activation codes.
 
