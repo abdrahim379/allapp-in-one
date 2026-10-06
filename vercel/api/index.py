@@ -6,8 +6,9 @@ Routes
   GET  /api/verify?token=...                    -> {ok}
   POST /api/tiktok/extract      {url}           -> {videos:[...]}
   GET  /api/tiktok/download?url=...&id=...      -> video/mp4
+  POST /api/chat                {messages}      -> text/plain stream (AI Gateway)
 
-TikTok routes require the access token (header X-Access-Token or ?token=).
+TikTok and chat routes require the access token (header X-Access-Token or ?token=).
 All video/image processing runs in the browser (ffmpeg.wasm), not here.
 """
 
@@ -163,6 +164,82 @@ def tiktok_download():
         "Content-Disposition": f'attachment; filename="{name}"',
         "Cache-Control": "no-store",
     })
+
+
+# ── AI Chat (Vercel AI Gateway) ───────────────────────────────
+GATEWAY_URL = "https://ai-gateway.vercel.sh/v1/chat/completions"
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "stealth/pixel-canary")
+
+
+def _gateway_key() -> str:
+    # On Vercel the per-request OIDC token arrives as a header; locally use
+    # AI_GATEWAY_API_KEY or a pulled VERCEL_OIDC_TOKEN.
+    return (os.environ.get("AI_GATEWAY_API_KEY")
+            or request.headers.get("x-vercel-oidc-token")
+            or os.environ.get("VERCEL_OIDC_TOKEN", ""))
+
+
+@app.post("/api/chat")
+def chat():
+    if not _token_ok():
+        return _deny()
+    body = request.get_json(silent=True) or {}
+    msgs = [
+        {"role": m["role"], "content": str(m["content"])[:20000]}
+        for m in (body.get("messages") or [])[-40:]
+        if isinstance(m, dict) and m.get("role") in ("system", "user", "assistant") and m.get("content")
+    ]
+    if not msgs:
+        return jsonify(error="Empty conversation."), 400
+    key = _gateway_key()
+    if not key:
+        return jsonify(error="AI Gateway is not configured (no OIDC token or AI_GATEWAY_API_KEY)."), 500
+
+    import json
+    import urllib.error
+    import urllib.request
+    req = urllib.request.Request(
+        GATEWAY_URL,
+        data=json.dumps({"model": CHAT_MODEL, "messages": msgs, "stream": True}).encode(),
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        upstream = urllib.request.urlopen(req, timeout=280)
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", "replace")[:600]
+        try:
+            detail = json.loads(detail).get("error", {}).get("message", detail)
+        except Exception:
+            pass
+        return jsonify(error=f"AI Gateway {e.code}: {detail}"), 502
+    except Exception as e:
+        return jsonify(error=f"AI Gateway unreachable: {e}"), 502
+
+    def stream():
+        # Re-emit the OpenAI SSE stream as plain text deltas.
+        with upstream:
+            for raw in upstream:
+                line = raw.decode("utf-8", "replace").strip()
+                if not line.startswith("data:"):
+                    continue
+                data = line[5:].strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    delta = json.loads(data)["choices"][0]["delta"].get("content")
+                except Exception:
+                    continue
+                if delta:
+                    yield delta
+
+    return Response(stream(), mimetype="text/plain; charset=utf-8",
+                    headers={"Cache-Control": "no-store", "X-Chat-Model": CHAT_MODEL})
+
+
+@app.get("/api/chat/info")
+def chat_info():
+    return jsonify(model=CHAT_MODEL)
 
 
 # ── Local development: serve the static site too ─────────────

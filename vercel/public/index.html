@@ -33,7 +33,7 @@
   <main id="app" hidden>
     <header class="hero">
       <h1>🚀 ALL APP IN ONE</h1>
-      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler</p>
+      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler · AI chat</p>
     </header>
 
     <nav class="tabs" role="tablist">
@@ -43,6 +43,7 @@
       <button role="tab" data-tab="img">🖼️ Image Optimizer</button>
       <button role="tab" data-tab="webp">🔄 → WebP</button>
       <button role="tab" data-tab="up">🎬 Video Upscaler</button>
+      <button role="tab" data-tab="chat">💬 AI Chat</button>
     </nav>
 
     <!-- HOME -->
@@ -55,10 +56,11 @@
         <div class="tool-card" data-go="img"><h3>🖼️ Image Optimizer <span class="badge">NEW</span></h3><p>Upscale images 1.5×–4× using LANCZOS resampling + smart sharpening. Keep quality, increase resolution.</p></div>
         <div class="tool-card" data-go="webp"><h3>🔄 → WebP Converter <span class="badge">NEW</span></h3><p>Convert PNG, JPG, BMP, TIFF, GIF → WebP. Batch processing, quality control, lossless mode.</p></div>
         <div class="tool-card" data-go="up"><h3>🎬 Video Upscaler <span class="badge">NEW</span></h3><p>Upscale videos to 720p / 1080p / 4K with ffmpeg LANCZOS + optional sharpen + denoise.</p></div>
+        <div class="tool-card" data-go="chat"><h3>💬 AI Chat <span class="badge">NEW</span></h3><p>Chat with the stealth/pixel-canary model through the Vercel AI Gateway, with answers streamed live.</p></div>
       </div>
       <hr>
       <div class="metrics">
-        <div class="metric"><span>Tools available</span><b>6</b></div>
+        <div class="metric"><span>Tools available</span><b>7</b></div>
         <div class="metric"><span>Video formats</span><b>MP4 · MOV · M4V</b></div>
         <div class="metric"><span>Image formats</span><b>PNG · JPG · WebP · BMP · TIFF</b></div>
         <div class="metric"><span>Max quality</span><b>120fps · 4K</b></div>
@@ -264,6 +266,21 @@
         <tr><td>🎨 Color boost</td><td>Contrast +6%, saturation +10%, gamma 1.02</td><td>Vibrant, professional-looking output</td></tr>
       </table>
       <p class="tiny">Auto: ≤360p → 720p · ≤720p → 1080p · ≤1080p → 1440p · &gt;1080p → 4K</p>
+    </section>
+
+    <!-- AI CHAT -->
+    <section class="panel" data-panel="chat" hidden>
+      <h2>💬 AI Chat</h2>
+      <p class="muted">Chat with <b id="chat-model">stealth/pixel-canary</b> through the Vercel AI Gateway. The conversation stays in this browser tab.</p>
+      <div id="chat-log" class="chat-log" aria-live="polite"></div>
+      <form id="chat-form" class="chat-form">
+        <textarea id="chat-input" rows="3" placeholder="Type a message… (Enter to send, Shift+Enter for a new line)"></textarea>
+        <div class="row">
+          <button class="btn primary grow" id="chat-send" type="submit">➤ Send</button>
+          <button class="btn" id="chat-new" type="button">🗑️ New chat</button>
+        </div>
+      </form>
+      <div id="chat-msg" class="msg"></div>
     </section>
   </main>
 

@@ -12,6 +12,7 @@ Streamlit version is here, behind the same activation codes.
 | 🖼️ Image Optimizer | In the browser: pica (Lanczos3 + unsharp) |
 | 🔄 → WebP | In the browser: libwebp (wasm) |
 | 🎬 Video Upscaler | In the browser: ffmpeg.wasm |
+| 💬 AI Chat | Vercel Python function → Vercel AI Gateway (`stealth/pixel-canary`), streamed |
 
 **Why the browser?** Vercel Functions cap uploads at 4.5 MB and ship no
 ffmpeg, so heavy video and image work can't run there. Doing it in the
@@ -23,7 +24,7 @@ Safari falls back to single-thread mode, which is slower.
 ## Layout
 ```
 vercel/
-├── api/index.py          Flask app: /api/activate, /api/verify, /api/tiktok/*
+├── api/index.py          Flask app: /api/activate, /api/verify, /api/tiktok/*, /api/chat
 ├── public/               Static UI (index.html, style.css, js/*)
 ├── scripts/copy-vendor.mjs  Copies ffmpeg.wasm & libs from node_modules → public/vendor
 ├── requirements.txt      Python deps for the function
@@ -36,6 +37,11 @@ vercel/
 - Framework preset: Other (`vercel.json` sets the build command and output directory)
 - Optional env var `ALLAPP_CODES`: a comma-separated list that replaces the
   built-in activation codes.
+- **AI Chat:** on Vercel it signs in to the AI Gateway with the project's
+  OIDC token automatically, so no key is needed. Locally, or to bill a
+  specific key, set `AI_GATEWAY_API_KEY`. The optional `CHAT_MODEL` changes
+  the model (default `stealth/pixel-canary`). `/api/chat` needs an
+  activation token, so strangers can't spend your credits.
 
 ## Run locally
 ```bash
