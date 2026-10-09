@@ -1,0 +1,10 @@
+{
+  "framework": null,
+  "outputDirectory": "public",
+  "functions": { "api/index.py": { "includeFiles": "private/**" } },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/play", "destination": "/api/index" },
+    { "source": "/dl/(.*)", "destination": "/api/index" }
+  ]
+}

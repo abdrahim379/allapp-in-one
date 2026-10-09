@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christmas Survey Showdown</title>
+<style>
+:root{--gold:#f3c94d;--gold2:#b8862f;--green:#0f4a2c;--green2:#0a3320;--burg:#6d1530;--red:#c1272d;--cream:#fff6dc}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#071a10;color:#fff;font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0;display:flex;flex-direction:column;background:
+ radial-gradient(ellipse at 50% 0%,#14603a 0%,#0a3320 55%,#06150d 100%)}
+#stage:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(109,21,48,.55) 0 11vw,rgba(15,74,44,.0) 11vw 22vw);pointer-events:none;opacity:.55}
+.bulbs{position:absolute;left:0;right:0;height:2.2vh;background:radial-gradient(circle,#fff3b0 0 28%,#f3c94d 30% 48%,transparent 52%) 0 0/3.2vh 2.2vh repeat-x;filter:drop-shadow(0 0 .6vh #ffd75a);z-index:3}
+.bulbs.t{top:.5vh}.bulbs.b{bottom:.5vh}
+.screen{position:relative;z-index:2;flex:1;display:none;flex-direction:column;padding:3.6vh 3vw 3.6vh}
+.screen.on{display:flex}
+h1.title{font-family:Impact,"Arial Black",sans-serif;text-align:center;letter-spacing:.3vw;color:var(--gold);text-shadow:0 .5vh 0 #7a5614,0 0 3vh rgba(243,201,77,.6);line-height:1}
+.btn{cursor:pointer;border:.25vh solid var(--gold);background:linear-gradient(#1a6b40,#0d3d25);color:#fff;font:700 2vh "Trebuchet MS",Arial;padding:1.1vh 1.8vw;border-radius:1vh;text-transform:uppercase;letter-spacing:.1vw}
+.btn:hover{filter:brightness(1.25)}
+.btn.red{background:linear-gradient(#d83a40,#8e1218)}
+.btn.gold{background:linear-gradient(#ffe27a,#c8921c);color:#3a2705}
+.btn.sm{font-size:1.35vh;padding:.6vh .75vw}
+/* title screen */
+#s-title{align-items:center;justify-content:center;text-align:center;gap:3vh}
+#s-title h1{font-size:12vh}
+#s-title h1 small{display:block;font-size:8vh;color:#ffeaa5}
+.teams{display:flex;gap:3vw;justify-content:center}
+.teams input{width:22vw;font:700 3vh "Trebuchet MS";text-align:center;padding:1.2vh;border-radius:1vh;border:.3vh solid var(--gold);background:#0b2c1b;color:#fff}
+.hint{font-size:1.9vh;color:#cfe6d6;max-width:60vw;line-height:1.5}
+/* board */
+#s-game{gap:1.6vh}
+.top{display:flex;align-items:stretch;justify-content:space-between;gap:1.5vw}
+.team{width:22vw;border:.35vh solid var(--gold);border-radius:1.4vh;background:linear-gradient(#7d1a36,#4a0e20);text-align:center;padding:.8vh .5vw;position:relative}
+.team .nm{font:700 2.3vh "Trebuchet MS";text-transform:uppercase;letter-spacing:.1vw;color:#ffe9a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team .sc{font:900 7vh Impact,"Arial Black";color:#fff;background:#0a2a19;border-radius:1vh;margin-top:.5vh;cursor:pointer}
+.team.turn{box-shadow:0 0 3vh 1vh rgba(255,215,90,.75)}
+.team .aw{position:static;transform:none;margin-top:.9vh}
+.team .sc{line-height:1.12;padding:.3vh 0}
+.ctl{gap:.5vw}
+.bottom .ctl{flex-wrap:nowrap}
+.mid{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.mid .rn{font:700 2.2vh "Trebuchet MS";letter-spacing:.3vw;color:var(--gold);text-transform:uppercase}
+.mid .bank{font:900 6vh Impact,"Arial Black";color:#fff;text-shadow:0 0 2vh #ffd75a}
+.mid .bank small{font:700 2vh "Trebuchet MS";color:#ffe9a8;letter-spacing:.1vw}
+.q{margin:0 auto;width:92%;text-align:center;font:700 4.4vh "Trebuchet MS";padding:1.6vh 2vw;border:.5vh solid var(--gold);border-radius:1.6vh;background:linear-gradient(#124d2d,#0a2e1b);box-shadow:inset 0 0 2vh rgba(0,0,0,.6),0 0 2vh rgba(243,201,77,.4)}
+.board{flex:1;margin:0 auto;width:78%;display:grid;gap:1.3vh;align-content:stretch;grid-auto-rows:1fr;min-height:0}
+.row{position:relative;display:flex;border:.4vh solid var(--gold);border-radius:1.3vh;overflow:hidden;cursor:pointer;background:linear-gradient(#12512f,#0a2e1b);box-shadow:inset 0 0 1.2vh rgba(0,0,0,.6)}
+.row .cover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(#1b6c40,#0c3a23);font:900 6vh Impact,"Arial Black";color:var(--gold);text-shadow:0 .3vh 0 #5a3d0b;z-index:2}
+.row .cover i{display:block;width:8vh;height:8vh;line-height:8vh;border-radius:50%;text-align:center;font-style:normal;background:radial-gradient(#ffe27a,#c8921c);color:#3a2705;font-size:5.4vh}
+.row.open .cover{display:none}
+.row .ans{flex:1;display:flex;align-items:center;padding-left:2vw;font:800 4.6vh "Trebuchet MS";color:#fff;text-shadow:0 .3vh .5vh #000}
+.row .pt{width:12vw;display:flex;align-items:center;justify-content:center;background:linear-gradient(#ffe27a,#c8921c);color:#3a2705;font:900 6vh Impact,"Arial Black";border-left:.4vh solid var(--gold)}
+.row.open{animation:pop .5s}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+.strikes{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;gap:2vw;pointer-events:none}
+.strikes.on{display:flex}
+.strikes b{font:900 38vh Impact,"Arial Black";color:#e5252c;text-shadow:0 0 4vh #000,0 0 2vh #ff5a60;-webkit-text-stroke:.6vh #5a0509}
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:1vw}
+.sx{display:flex;gap:.6vw;min-width:14vw}
+.sx span{width:5.2vh;height:5.2vh;border:.3vh solid #6b1a1d;border-radius:.8vh;color:#4a1517;font:900 4vh Impact;text-align:center;line-height:5vh;background:#1b0b0c}
+.sx span.on{background:#d82a31;color:#fff;border-color:#ffb3b6;box-shadow:0 0 1.5vh #ff4a52}
+.ctl{display:flex;gap:.7vw;flex-wrap:wrap;justify-content:center}
+.keys{font-size:1.45vh;color:#9fc4ad;text-align:center;line-height:1.5}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:50;display:none;align-items:center;justify-content:center}
+.modal.on{display:flex}
+.box{width:78vw;height:84vh;background:#0b2c1b;border:.4vh solid var(--gold);border-radius:1.6vh;padding:2vh 2vw;display:flex;flex-direction:column;gap:1.2vh}
+.box h2{color:var(--gold);font-size:3vh}
+.box p{font-size:1.7vh;color:#cfe6d6;line-height:1.45}
+.box textarea{flex:1;background:#06150d;color:#fff;border:.2vh solid #2b6a47;border-radius:.8vh;padding:1vh;font:1.8vh Consolas,Menlo,monospace;resize:none}
+.box .bar{display:flex;gap:1vw;justify-content:flex-end}
+.final{text-align:center;justify-content:center;align-items:center}
+.final h1{font-size:11vh}
+.final .wn{font:900 8vh Impact;color:#fff;margin:2vh 0}
+#rlist{display:flex;gap:.35vw;flex-wrap:wrap;justify-content:center}
+#rlist button{cursor:pointer;width:3.4vh;height:3.4vh;border-radius:50%;border:.2vh solid #2b6a47;background:#0b2c1b;color:#9fc4ad;font:700 1.3vh Arial}
+#rlist button.cur{background:var(--gold);color:#3a2705;border-color:#fff}
+#rlist button.done{background:#7d1a36;color:#fff;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="stage">
+ <div class="bulbs t"></div><div class="bulbs b"></div>
+
+ <section class="screen on" id="s-title">
+  <h1 class="title">CHRISTMAS<small>SURVEY SHOWDOWN</small></h1>
+  <div class="teams"><input id="tn1" value="Team 1" maxlength="18"><input id="tn2" value="Team 2" maxlength="18"></div>
+  <div class="hint">Two teams. Pick a round, reveal the top answers, count the strikes, then award the bank to the team that wins the round. Scores add up automatically. Press <b>E</b> at any time to edit the rounds.</div>
+  <div class="ctl"><button class="btn gold" id="start">Start the game</button><button class="btn" id="edit0">Edit rounds</button></div>
+ </section>
+
+ <section class="screen" id="s-game">
+  <div class="top">
+   <div class="team" id="t1"><div class="nm" id="n1">Team 1</div><div class="sc" id="sc1" title="Click to set the score">0</div><button class="btn sm gold aw" id="aw1">Award bank (Q)</button></div>
+   <div class="mid"><div class="rn" id="rn">Round 1 of 50</div><div class="bank" id="bank">0 <small id="mult"></small></div></div>
+   <div class="team" id="t2"><div class="nm" id="n2">Team 2</div><div class="sc" id="sc2" title="Click to set the score">0</div><button class="btn sm gold aw" id="aw2">Award bank (P)</button></div>
+  </div>
+  <div class="q" id="q"></div>
+  <div class="hint" style="text-align:center;max-width:none;margin-top:-.8vh">Click a numbered row or press 1-8 to reveal the answer</div>
+  <div class="board" id="board"></div>
+  <div class="bottom">
+   <div class="sx" id="sx"><span>X</span><span>X</span><span>X</span></div>
+   <div class="ctl">
+    <button class="btn sm" id="prev">&larr; Prev</button>
+    <button class="btn sm red" id="strike">Strike (X)</button>
+    <button class="btn sm" id="revall">Reveal all (A)</button>
+    <button class="btn sm" id="reset">Reset round (R)</button>
+    <button class="btn sm" id="next">Next &rarr;</button>
+   </div>
+   <div class="ctl"><button class="btn sm" id="mute">Sound: on (M)</button><button class="btn sm" id="fs">Full screen (F)</button><button class="btn sm" id="edit">Edit (E)</button><button class="btn sm" id="fin">Final (W)</button></div>
+  </div>
+  <div id="rlist"></div>
+  <div class="keys">Keys: 1-8 reveal an answer &middot; X strike &middot; Q / P award the bank to team 1 / team 2 &middot; arrows change round &middot; A reveal all &middot; R reset round &middot; M sound &middot; F full screen &middot; E edit &middot; W final score</div>
+  <div class="strikes" id="strikes"></div>
+ </section>
+
+ <section class="screen final" id="s-final">
+  <h1 class="title">FINAL SCORE</h1>
+  <div class="wn" id="winner"></div>
+  <div class="teams"><div class="team" style="width:24vw"><div class="nm" id="fn1"></div><div class="sc" id="fs1"></div></div><div class="team" style="width:24vw"><div class="nm" id="fn2"></div><div class="sc" id="fs2"></div></div></div>
+  <div class="ctl" style="margin-top:3vh"><button class="btn" id="back">Back to the game</button><button class="btn red" id="newg">New game (clear scores)</button></div>
+ </section>
+
+ <div class="modal" id="m-edit"><div class="box">
+  <h2>Edit rounds</h2>
+  <p>Each round: a line starting with <b>Q:</b> then 4 to 8 lines <b>Answer | points</b>, best answer first. Add <b>x2</b> or <b>x3</b> after the question number line to change the multiplier, for example <b>Q x2: ...</b>. Separate rounds with a blank line. Click Save. Your changes stay in this browser. Use Export to keep a backup file and Import to load one.</p>
+  <textarea id="ed" spellcheck="false"></textarea>
+  <div class="bar"><input type="file" id="imp" accept=".txt,.csv" style="display:none"><button class="btn sm" id="bimp">Import file</button><button class="btn sm" id="bexp">Export file</button><button class="btn sm red" id="brst">Restore original 50 rounds</button><button class="btn sm" id="bcan">Cancel</button><button class="btn sm gold" id="bsave">Save</button></div>
+ </div></div>
+</div>
+
+<script id="data" type="application/json">[{"n": 1, "q": "Name a Christmas song people sing.", "a": [["Jingle Bells", 24], ["Silent Night", 18], ["Joy to the World", 10], ["Deck the Halls", 9]], "m": 1}, {"n": 2, "q": "Name something you find under the Christmas tree.", "a": [["Presents", 38], ["Cat", 21], ["Pine needles", 17], ["Wrapping paper", 12]], "m": 1}, {"n": 3, "q": "Name a Christmas movie people watch every year.", "a": [["Home Alone", 35], ["Elf", 25], ["The Polar Express", 20], ["Love Actually", 12], ["It's a Wonderful Life", 8]], "m": 1}, {"n": 4, "q": "Name something people put on a Christmas tree.", "a": [["Lights", 32], ["Ornaments", 27], ["Star", 18], ["Tinsel", 14], ["Candy canes", 9]], "m": 1}, {"n": 5, "q": "Name a Christmas cookie flavor.", "a": [["Sugar", 38], ["Gingerbread", 26], ["Chocolate chip", 17], ["Peanut butter", 11], ["Shortbread", 8]], "m": 1}, {"n": 6, "q": "Name something you wear when it is cold.", "a": [["Coat", 40], ["Scarf", 24], ["Gloves", 16], ["Hat", 12], ["Boots", 8]], "m": 1}, {"n": 7, "q": "Name one of Santa's reindeer.", "a": [["Rudolph", 28], ["Dasher", 23], ["Dancer", 19], ["Prancer", 14], ["Vixen", 9], ["Comet", 7]], "m": 1}, {"n": 8, "q": "Name something people hang for Christmas.", "a": [["Stockings", 35], ["Lights", 25], ["Wreath", 20], ["Ornaments", 12], ["Mistletoe", 8]], "m": 1}, {"n": 9, "q": "Name a food on a Christmas dinner table.", "a": [["Turkey", 32], ["Ham", 27], ["Mashed potatoes", 18], ["Stuffing", 14], ["Gravy", 9]], "m": 1}, {"n": 10, "q": "Name a drink people have at Christmas.", "a": [["Hot chocolate", 38], ["Eggnog", 26], ["Apple cider", 17], ["Coffee", 11], ["Tea", 8]], "m": 1}, {"n": 11, "q": "Name something people do on Christmas Eve.", "a": [["Leave cookies for Santa", 40], ["Watch a movie", 24], ["Wrap presents", 16], ["Open one gift", 12], ["Read a story", 8]], "m": 1}, {"n": 12, "q": "Name a place where you might see Santa.", "a": [["Mall", 42], ["Parade", 23], ["Christmas party", 17], ["Department store", 11], ["School", 7]], "m": 1}, {"n": 13, "q": "Name something that is red at Christmas.", "a": [["Santa suit", 35], ["Candy cane", 25], ["Ornaments", 20], ["Poinsettia", 12], ["Ribbon", 8]], "m": 1}, {"n": 14, "q": "Name something that is green at Christmas.", "a": [["Christmas tree", 32], ["Wreath", 27], ["Holly", 18], ["Grinch", 14], ["Garland", 9]], "m": 1}, {"n": 15, "q": "Name a Christmas decoration for the outside of a house.", "a": [["Lights", 38], ["Inflatable figure", 26], ["Wreath", 17], ["Reindeer figures", 11], ["Snowman", 8]], "m": 1}, {"n": 16, "q": "Name a kind of Christmas candy.", "a": [["Candy cane", 40], ["Chocolate", 24], ["Peppermint bark", 16], ["Gumdrops", 12], ["Fudge", 8]], "m": 1}, {"n": 17, "q": "Name a gift people wrap.", "a": [["Clothes", 42], ["Toys", 23], ["Books", 17], ["Gift card", 11], ["Jewelry", 7]], "m": 1}, {"n": 18, "q": "Name something you need to wrap a present.", "a": [["Wrapping paper", 35], ["Tape", 25], ["Scissors", 20], ["Ribbon", 12], ["Gift tag", 8]], "m": 1}, {"n": 19, "q": "Name a winter activity.", "a": [["Sledding", 32], ["Skiing", 27], ["Building a snowman", 18], ["Ice skating", 14], ["Snowball fight", 9]], "m": 1}, {"n": 20, "q": "Name something a snowman has.", "a": [["Carrot nose", 38], ["Hat", 26], ["Scarf", 17], ["Coal eyes", 11], ["Stick arms", 8]], "m": 1}, {"n": 21, "q": "Name a job in Santa's workshop.", "a": [["Toy maker", 40], ["Gift wrapper", 24], ["Sleigh driver", 16], ["Reindeer trainer", 12], ["Letter reader", 8]], "m": 2}, {"n": 22, "q": "Name something you find in a Christmas stocking.", "a": [["Candy", 42], ["Orange", 23], ["Small toy", 17], ["Socks", 11], ["Chocolate coin", 7]], "m": 2}, {"n": 23, "q": "Name something people do at a Christmas party.", "a": [["Exchange gifts", 35], ["Eat", 25], ["Sing carols", 20], ["Play games", 12], ["Dance", 8]], "m": 2}, {"n": 24, "q": "Name a Christmas movie character.", "a": [["Grinch", 32], ["Buddy the Elf", 27], ["Kevin", 18], ["Scrooge", 14], ["Frosty", 9]], "m": 2}, {"n": 25, "q": "Name a Christmas tradition.", "a": [["Decorating the tree", 38], ["Opening gifts", 26], ["Baking cookies", 17], ["Christmas dinner", 11], ["Singing carols", 8]], "m": 2}, {"n": 26, "q": "Name something people forget to buy before Christmas.", "a": [["Batteries", 40], ["Wrapping paper", 24], ["Tape", 16], ["Gift bags", 12], ["Cards", 8]], "m": 2}, {"n": 27, "q": "Name something kids ask Santa for.", "a": [["Toys", 42], ["Bike", 23], ["Video game", 17], ["Doll", 11], ["Puppy", 7]], "m": 2}, {"n": 28, "q": "Name a sound you hear at Christmas.", "a": [["Bells", 35], ["Carols", 25], ["Wrapping paper ripping", 20], ["Crackling fire", 12], ["Kids laughing", 8]], "m": 2}, {"n": 29, "q": "Name something that smells like Christmas.", "a": [["Pine tree", 32], ["Cinnamon", 27], ["Cookies", 18], ["Peppermint", 14], ["Hot cocoa", 9]], "m": 2}, {"n": 30, "q": "Name a Christmas song that gets stuck in your head.", "a": [["All I Want for Christmas Is You", 38], ["Jingle Bells", 26], ["Last Christmas", 17], ["Let It Snow", 11], ["Rockin' Around the Christmas Tree", 8]], "m": 2}, {"n": 31, "q": "Name a place people go to see Christmas lights.", "a": [["Neighborhood", 40], ["Park", 24], ["Downtown", 16], ["Zoo", 12], ["Mall", 8]], "m": 2}, {"n": 32, "q": "Name something you put in cookie dough.", "a": [["Sugar", 42], ["Butter", 23], ["Flour", 17], ["Chocolate chips", 11], ["Sprinkles", 7]], "m": 2}, {"n": 33, "q": "Name something you use to decorate a gingerbread house.", "a": [["Candy", 35], ["Icing", 25], ["Gumdrops", 20], ["Sprinkles", 12], ["Candy canes", 8]], "m": 2}, {"n": 34, "q": "Name a gift an adult would like.", "a": [["Gift card", 32], ["Socks", 27], ["Perfume", 18], ["Tools", 14], ["Slippers", 9]], "m": 2}, {"n": 35, "q": "Name something you do in the snow.", "a": [["Build a snowman", 38], ["Make snow angels", 26], ["Sled", 17], ["Shovel", 11], ["Throw snowballs", 8]], "m": 2}, {"n": 36, "q": "Name a place to hang a stocking.", "a": [["Fireplace", 40], ["Mantel", 24], ["Bedpost", 16], ["Staircase", 12], ["Door", 8]], "m": 2}, {"n": 37, "q": "Name something you can buy at a Christmas market.", "a": [["Hot drinks", 42], ["Ornaments", 23], ["Sweets", 17], ["Gifts", 11], ["Candles", 7]], "m": 2}, {"n": 38, "q": "Name a gift people often regift.", "a": [["Candle", 35], ["Scarf", 25], ["Socks", 20], ["Mug", 12], ["Fruitcake", 8]], "m": 2}, {"n": 39, "q": "Name a family member who often hosts Christmas dinner.", "a": [["Mom", 32], ["Grandma", 27], ["Dad", 18], ["Aunt", 14], ["Grandpa", 9]], "m": 2}, {"n": 40, "q": "Name something that can go wrong on Christmas Day.", "a": [["Burnt dinner", 38], ["Tangled lights", 26], ["Missing gift", 17], ["Broken ornament", 11], ["Dead batteries", 8]], "m": 2}, {"n": 41, "q": "Name a Christmas word that starts with S.", "a": [["Santa", 40], ["Snow", 24], ["Sleigh", 16], ["Stocking", 12], ["Star", 8]], "m": 3}, {"n": 42, "q": "Name a holiday in winter.", "a": [["New Year's Eve", 42], ["Hanukkah", 23], ["Valentine's Day", 17], ["Kwanzaa", 11], ["Groundhog Day", 7]], "m": 3}, {"n": 43, "q": "Name something people say at Christmas.", "a": [["Merry Christmas", 35], ["Happy holidays", 25], ["Thank you", 20], ["Ho ho ho", 12], ["Happy New Year", 8]], "m": 3}, {"n": 44, "q": "Name something an elf might do.", "a": [["Make toys", 32], ["Wrap gifts", 27], ["Help Santa", 18], ["Sing", 14], ["Play pranks", 9]], "m": 3}, {"n": 45, "q": "Name something people buy in December.", "a": [["Gifts", 38], ["Tree", 26], ["Decorations", 17], ["Food", 11], ["Cards", 8]], "m": 3}, {"n": 46, "q": "Name a place you can find a Christmas tree.", "a": [["Living room", 40], ["Tree farm", 24], ["Store", 16], ["Town square", 12], ["Office", 8]], "m": 3}, {"n": 47, "q": "Name something people save room for at Christmas dinner.", "a": [["Pie", 42], ["Cake", 23], ["Cookies", 17], ["Pudding", 11], ["Ice cream", 7]], "m": 3}, {"n": 48, "q": "Name something you need for a snowball fight.", "a": [["Snow", 35], ["Gloves", 25], ["Hat", 20], ["Friends", 12], ["Boots", 8]], "m": 3}, {"n": 49, "q": "Name something Santa leaves behind.", "a": [["Presents", 32], ["Crumbs", 27], ["Footprints", 18], ["Soot", 14], ["A note", 9]], "m": 3}, {"n": 50, "q": "Name something people do before bed on Christmas Eve.", "a": [["Leave cookies out", 38], ["Put on pajamas", 26], ["Read a story", 17], ["Set out carrots", 11], ["Check for Santa", 8]], "m": 3}]</script>
+<script>
+/* ---------- LOGIC (pure, no DOM) ---------- */
+var Logic=(function(){
+ function parseText(t){
+  var rounds=[],blocks=t.replace(/\r/g,'').split(/\n\s*\n/);
+  blocks.forEach(function(b){
+   var lines=b.split('\n').map(function(s){return s.trim()}).filter(Boolean);
+   if(!lines.length)return;
+   var m=lines[0].match(/^Q\s*(?:x(\d+))?\s*:\s*(.+)$/i);
+   if(!m)return;
+   var a=[];
+   lines.slice(1).forEach(function(l){var p=l.split('|');if(p.length>=2){var n=parseInt(p[p.length-1],10);if(!isNaN(n))a.push([p.slice(0,-1).join('|').trim(),n]);}});
+   if(a.length)rounds.push({n:rounds.length+1,q:m[2].trim(),a:a.slice(0,8),m:m[1]?parseInt(m[1],10):1});
+  });
+  return rounds;
+ }
+ function toText(rounds){
+  return rounds.map(function(r){return 'Q'+(r.m>1?' x'+r.m:'')+': '+r.q+'\n'+r.a.map(function(x){return x[0]+' | '+x[1]}).join('\n')}).join('\n\n');
+ }
+ function newState(n){return {i:0,open:[],strikes:0,s:[0,0],awarded:[],visited:{},n:n}}
+ function openSet(st){return st.open}
+ function bankOf(st,r){var t=0;st.open.forEach(function(k){t+=r.a[k][1]});return t}
+ function reveal(st,r,k){if(k<0||k>=r.a.length)return false;if(st.open.indexOf(k)>=0)return false;st.open.push(k);return true}
+ function strike(st){if(st.strikes>=3)return false;st.strikes++;return true}
+ function award(st,r,team){
+  if(st.awarded.length&&st.awarded[0]!==null&&st.awarded[0]!==undefined&&st.lockAward)return 0;
+  var pts=bankOf(st,r)*(r.m||1);
+  st.s[team]+=pts;st.awarded=[team,pts];st.lockAward=true;return pts;
+ }
+ function resetRound(st){st.open=[];st.strikes=0;st.awarded=[];st.lockAward=false}
+ function goto(st,idx,n){idx=Math.max(0,Math.min(n-1,idx));st.i=idx;st.open=[];st.strikes=0;st.awarded=[];st.lockAward=false;st.visited[idx]=1;return idx}
+ function undoAward(st){if(st.awarded.length){st.s[st.awarded[0]]-=st.awarded[1];st.awarded=[];st.lockAward=false}}
+ return {parseText:parseText,toText:toText,newState:newState,bankOf:bankOf,reveal:reveal,strike:strike,award:award,resetRound:resetRound,goto:goto,undoAward:undoAward};
+})();
+if(typeof module!=='undefined')module.exports=Logic;
+</script>
+<script>
+/* ---------- UI ---------- */
+(function(){
+ if(typeof document==='undefined')return;
+ var ORIGINAL=JSON.parse(document.getElementById('data').textContent);
+ var rounds=ORIGINAL.slice();
+ function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+ function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+ var saved=safeGet('css_rounds_v1');
+ if(saved){try{var r=Logic.parseText(saved);if(r.length)rounds=r}catch(e){}}
+ var st=Logic.newState(rounds.length);
+ var names=['Team 1','Team 2'];var muted=false;
+ function $(id){return document.getElementById(id)}
+ function show(id){['s-title','s-game','s-final'].forEach(function(s){$(s).classList.toggle('on',s===id)})}
+ /* sound */
+ var ac=null;
+ function ctx(){if(!ac){try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
+ function tone(f,t0,d,type,vol){var c=ctx();if(!c||muted)return;var o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(0,c.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.25,c.currentTime+t0+.02);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t0+d);o.connect(g);g.connect(c.destination);o.start(c.currentTime+t0);o.stop(c.currentTime+t0+d+.05)}
+ var snd={
+  ding:function(){tone(988,0,.5,'sine',.28);tone(1480,.08,.6,'sine',.2)},
+  buzz:function(){tone(110,0,.7,'sawtooth',.35);tone(116,0,.7,'square',.18)},
+  win:function(){[523,659,784,1046,1318].forEach(function(f,i){tone(f,i*.11,.5,'triangle',.28)})},
+  tick:function(){tone(660,0,.08,'square',.12)}
+ };
+ /* render */
+ function cur(){return rounds[st.i]}
+ function render(){
+  var r=cur();
+  $('n1').textContent=names[0];$('n2').textContent=names[1];
+  $('sc1').textContent=st.s[0];$('sc2').textContent=st.s[1];
+  $('rn').textContent='Round '+r.n+' of '+rounds.length;
+  var b=Logic.bankOf(st,r);
+  $('bank').innerHTML=b+' <small>'+(r.m>1?'BANK x'+r.m+' = '+(b*r.m):'BANK')+'</small>';
+  $('q').textContent=r.q;
+  var bd=$('board');bd.innerHTML='';bd.style.gridTemplateRows='repeat('+Math.max(r.a.length,4)+',1fr)';
+  r.a.forEach(function(a,k){
+   var d=document.createElement('div');d.className='row'+(st.open.indexOf(k)>=0?' open':'');
+   d.innerHTML='<div class="cover"><i>'+(k+1)+'</i></div><div class="ans">'+esc(a[0])+'</div><div class="pt">'+a[1]+'</div>';
+   d.onclick=function(){doReveal(k)};bd.appendChild(d);
+  });
+  var sx=$('sx').children;for(var i=0;i<3;i++)sx[i].className=i<st.strikes?'on':'';
+  $('aw1').textContent='Award bank (Q)';$('aw2').textContent='Award bank (P)';
+  $('t1').classList.toggle('turn',st.awarded[0]===0);$('t2').classList.toggle('turn',st.awarded[0]===1);
+  var rl=$('rlist');rl.innerHTML='';
+  rounds.forEach(function(x,i){var bt=document.createElement('button');bt.textContent=x.n;bt.className=(i===st.i?'cur':(st.visited[i]?'done':''));bt.onclick=function(){go(i)};rl.appendChild(bt)});
+ }
+ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+ function doReveal(k){if(Logic.reveal(st,cur(),k)){snd.ding();render()}}
+ function doStrike(){if(Logic.strike(st)){snd.buzz();flashX(st.strikes);render()}}
+ function flashX(n){var s=$('strikes');s.innerHTML='';for(var i=0;i<n;i++){s.innerHTML+='<b>X</b>'}s.classList.add('on');setTimeout(function(){s.classList.remove('on')},1100)}
+ function doAward(t){var p=Logic.award(st,cur(),t);if(p>0){snd.win();render()}else if(Logic.bankOf(st,cur())===0){snd.tick()}}
+ function go(i){Logic.goto(st,i,rounds.length);render();snd.tick()}
+ function revealAll(){cur().a.forEach(function(_,k){Logic.reveal(st,cur(),k)});snd.ding();render()}
+ function openEdit(){$('ed').value=Logic.toText(rounds);$('m-edit').classList.add('on')}
+ function fs(){var e=document.documentElement;if(!document.fullscreenElement){(e.requestFullscreen||e.webkitRequestFullscreen||function(){}).call(e)}else{(document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document)}}
+ function final(){
+  $('fn1').textContent=names[0];$('fn2').textContent=names[1];$('fs1').textContent=st.s[0];$('fs2').textContent=st.s[1];
+  $('winner').textContent=st.s[0]===st.s[1]?'It is a tie!':(st.s[0]>st.s[1]?names[0]:names[1])+' wins!';
+  show('s-final');snd.win();
+ }
+ $('start').onclick=function(){ctx();names[0]=$('tn1').value||'Team 1';names[1]=$('tn2').value||'Team 2';Logic.goto(st,0,rounds.length);show('s-game');render();snd.ding()};
+ $('edit0').onclick=openEdit;$('edit').onclick=openEdit;
+ $('aw1').onclick=function(){doAward(0)};$('aw2').onclick=function(){doAward(1)};
+ $('strike').onclick=doStrike;$('revall').onclick=revealAll;
+ $('reset').onclick=function(){Logic.undoAward(st);Logic.resetRound(st);render();snd.tick()};
+ $('prev').onclick=function(){go(st.i-1)};$('next').onclick=function(){go(st.i+1)};
+ $('mute').onclick=function(){muted=!muted;$('mute').textContent='Sound: '+(muted?'off':'on')+' (M)'};
+ $('fs').onclick=fs;$('fin').onclick=final;$('back').onclick=function(){show('s-game');render()};
+ $('newg').onclick=function(){if(confirm('Clear all scores and start again?')){st=Logic.newState(rounds.length);show('s-title')}};
+ ['sc1','sc2'].forEach(function(id,t){$(id).onclick=function(){var v=prompt('Set the score for '+names[t],st.s[t]);if(v!==null&&!isNaN(parseInt(v,10))){st.s[t]=parseInt(v,10);render()}}});
+ $('bcan').onclick=function(){$('m-edit').classList.remove('on')};
+ $('bsave').onclick=function(){var r=Logic.parseText($('ed').value);if(!r.length){alert('No valid rounds found. Check the format.');return}rounds=r;safeSet('css_rounds_v1',$('ed').value);st=Logic.newState(rounds.length);$('m-edit').classList.remove('on');if($('s-game').classList.contains('on')){Logic.goto(st,0,rounds.length);render()}};
+ $('brst').onclick=function(){if(confirm('Replace your rounds with the original 50?')){rounds=ORIGINAL.slice();try{localStorage.removeItem('css_rounds_v1')}catch(e){}$('ed').value=Logic.toText(rounds)}};
+ $('bexp').onclick=function(){var blob=new Blob([$('ed').value],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-rounds.txt';a.click()};
+ $('bimp').onclick=function(){$('imp').click()};
+ $('imp').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){$('ed').value=rd.result};rd.readAsText(f)};
+ document.addEventListener('keydown',function(e){
+  if(document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  if($('m-edit').classList.contains('on'))return;
+  var k=e.key.toLowerCase();
+  if($('s-title').classList.contains('on')){if(k==='e')openEdit();return}
+  if($('s-final').classList.contains('on')){if(k==='escape'||k==='w'){show('s-game');render()}return}
+  if(/^[1-8]$/.test(k))doReveal(parseInt(k,10)-1);
+  else if(k==='x')doStrike();
+  else if(k==='q')doAward(0);else if(k==='p')doAward(1);
+  else if(k==='arrowright')go(st.i+1);else if(k==='arrowleft')go(st.i-1);
+  else if(k==='a')revealAll();else if(k==='r'){Logic.undoAward(st);Logic.resetRound(st);render()}
+  else if(k==='m')$('mute').click();else if(k==='f')fs();else if(k==='e')openEdit();else if(k==='w')final();
+ });
+})();
+</script>
+</body>
+</html>

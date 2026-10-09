@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christmas Survey Showdown</title>
+<meta name="description" content="Christmas Survey Showdown: a 50-round, two-team Christmas party game for your TV or laptop.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎄</text></svg>">
+<style>
+:root{--gold:#f3c94d;--gold2:#c8921c;--cream:#fff6dc;--muted:#cfe6d6;--err:#ff8a8f}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:#071a10;color:#fff;font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif}
+body{min-height:100vh;display:grid;place-items:center;padding:16px;
+ background:radial-gradient(ellipse at 50% 0%,#14603a 0%,#0a3320 55%,#06150d 100%)}
+.bulbs{position:fixed;left:0;right:0;height:18px;background:radial-gradient(circle,#fff3b0 0 28%,#f3c94d 30% 48%,transparent 52%) 0 0/26px 18px repeat-x;filter:drop-shadow(0 0 5px #ffd75a)}
+.bulbs.t{top:4px}.bulbs.b{bottom:4px}
+.card{width:100%;max-width:520px;background:linear-gradient(#124d2d,#0a2e1b);border:3px solid var(--gold);border-radius:18px;padding:34px 28px;text-align:center;box-shadow:0 0 40px rgba(243,201,77,.35)}
+h1{font-family:Impact,"Arial Black",sans-serif;color:var(--gold);letter-spacing:2px;line-height:1;text-shadow:0 4px 0 #7a5614,0 0 20px rgba(243,201,77,.5);font-size:clamp(2.4rem,9vw,3.6rem)}
+h1 small{display:block;color:#ffeaa5;font-size:.62em;margin-top:6px}
+p{color:var(--muted);line-height:1.5;margin:16px 0}
+input{width:100%;font:700 22px "Trebuchet MS",Arial;text-align:center;letter-spacing:2px;text-transform:uppercase;padding:12px;border-radius:10px;border:3px solid var(--gold);background:#06150d;color:#fff}
+input:focus{outline:3px solid #fff3b0;outline-offset:2px}
+.btn{display:block;width:100%;margin-top:14px;cursor:pointer;border:3px solid var(--gold);border-radius:10px;padding:13px;font:700 18px "Trebuchet MS",Arial;text-transform:uppercase;letter-spacing:1px;text-decoration:none;color:#3a2705;background:linear-gradient(#ffe27a,var(--gold2))}
+.btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.alt{background:linear-gradient(#1a6b40,#0d3d25);color:#fff}
+.msg{min-height:1.5em;margin-top:12px;font-weight:700}
+.msg.err{color:var(--err)}
+.row{display:flex;gap:10px}
+.row .btn{font-size:14px;padding:10px}
+.tiny{font-size:13px;color:#9fc4ad;margin-top:18px}
+.tiny a{color:var(--gold)}
+ul{list-style:none;color:var(--muted);text-align:left;margin:14px auto 0;max-width:360px;line-height:1.7}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="bulbs t"></div><div class="bulbs b"></div>
+<main class="card">
+ <h1>CHRISTMAS<small>SURVEY SHOWDOWN</small></h1>
+
+ <section id="gate" hidden>
+  <p>Enter the activation code from your order to unlock the game.</p>
+  <form id="f">
+   <input id="code" placeholder="CSS-XXXX-XXXX" maxlength="20" autocomplete="off" spellcheck="false" aria-label="Activation code">
+   <button class="btn" id="go" type="submit">Unlock the game</button>
+  </form>
+  <div class="msg" id="msg" role="alert"></div>
+  <p class="tiny">You only need to enter the code once on each device and browser.</p>
+ </section>
+
+ <section id="ready" hidden>
+  <p>Your game is unlocked. 🎄</p>
+  <a class="btn" href="/play">▶ Play the game</a>
+  <ul>
+   <li>📺 Best on a TV or laptop in full screen (press F)</li>
+   <li>👥 Two teams, 50 rounds, scores add up for you</li>
+   <li>✏️ Press E in the game to edit the rounds</li>
+  </ul>
+  <p class="tiny">Backup of the 50 rounds:</p>
+  <div class="row">
+   <a class="btn alt" href="/dl/my-rounds-original-50.txt">Rounds (.txt)</a>
+   <a class="btn alt" href="/dl/rounds-50.csv">Rounds (.csv)</a>
+  </div>
+  <p class="tiny"><a href="#" id="out">Remove access from this browser</a></p>
+ </section>
+</main>
+<script>
+(function(){
+ var $=function(id){return document.getElementById(id)};
+ function show(ok){$('gate').hidden=ok;$('ready').hidden=!ok;if(!ok)$('code').focus()}
+ fetch('/api/status',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){show(!!j.ok)}).catch(function(){show(false)});
+ $('f').addEventListener('submit',function(e){
+  e.preventDefault();
+  var code=$('code').value.trim().toUpperCase(),m=$('msg');
+  if(!code)return;
+  $('go').disabled=true;m.className='msg';m.textContent='Checking…';
+  fetch('/api/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code})})
+   .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
+   .then(function(x){if(x.ok){m.textContent='';show(true)}else{m.className='msg err';m.textContent=x.j.error||'Invalid activation code.'}})
+   .catch(function(){m.className='msg err';m.textContent='Could not reach the server. Check your connection.'})
+   .then(function(){$('go').disabled=false});
+ });
+ $('out').addEventListener('click',function(e){e.preventDefault();fetch('/api/logout',{method:'POST'}).then(function(){$('code').value='';show(false)})});
+})();
+</script>
+</body>
+</html>
