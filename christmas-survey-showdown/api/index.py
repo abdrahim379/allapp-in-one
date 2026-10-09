@@ -19,6 +19,7 @@ from flask import Flask, Response, jsonify, redirect, request, send_file
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRIVATE = os.path.join(os.path.dirname(HERE), "private")
+PUBLIC = os.path.join(os.path.dirname(HERE), "public")
 
 CODE_HASHES = {
     "06afea9c717fe5fb79a8383faabccfe4293e1394f6b7f14590e13376e75b69f7",
@@ -73,6 +74,12 @@ def logout():
     return resp
 
 
+@app.get("/")
+def home():
+    # Normally served from public/ by the CDN; this is the fallback.
+    return send_file(os.path.join(PUBLIC, "index.html"), mimetype="text/html")
+
+
 @app.get("/play")
 def play():
     if not _ok():
@@ -93,13 +100,6 @@ def download(name):
     return resp
 
 
-# Local development: also serve the activation page.
+# Local development
 if __name__ == "__main__":
-    from flask import send_from_directory
-    PUBLIC = os.path.join(os.path.dirname(HERE), "public")
-
-    @app.get("/")
-    def _home():
-        return send_from_directory(PUBLIC, "index.html")
-
     app.run(host="127.0.0.1", port=int(os.environ.get("PORT", 3000)))
