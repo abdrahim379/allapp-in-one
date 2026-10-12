@@ -31,6 +31,8 @@ CODE_HASHES = {
     "de087923d4af995df5306c14e42fcd2c6bf02e3b895b04ab46270fe59c3c5b0c",
     "16fe06bbcca82c43147e49bbe568f70cdedd0875aaf02e5754ac5f1e53d20372",
     "e154363b933bd63d3cbba8115458f8b6750aa3736b7a3984d26d642d021d69fc",
+    # Shared code printed in the Etsy download PDF (block it with GAME_REVOKED_HASHES if it leaks)
+    "7a1b0cb2d5b809037b5b59c7509cc2290140543c79d2053025f6063ee8a7b456",
 } | {h.strip().lower() for h in os.environ.get("GAME_CODE_HASHES", "").split(",") if h.strip()}
 REVOKED = {h.strip().lower() for h in os.environ.get("GAME_REVOKED_HASHES", "").split(",") if h.strip()}
 
