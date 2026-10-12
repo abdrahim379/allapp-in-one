@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vibe Check Duel</title>
+<meta name="description" content="Vibe Check Duel: a two-player guessing game with 40 rounds. Play on your phone, tablet or laptop.">
+<meta name="theme-color" content="#17132d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vibe Check">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+:root{--ink:#17132d;--plum:#33205a;--violet:#7653d6;--lilac:#dcd0ff;--peach:#ffae91;--mint:#a7efd4;--cream:#fffaf3;--yellow:#ffe67d;--err:#c2334a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+ background:radial-gradient(circle at 20% 0,#7964c7 0,transparent 32%),radial-gradient(circle at 90% 95%,#ff9d83 0,transparent 34%),var(--ink);
+ color:var(--cream);font:500 16px/1.4 ui-rounded,"Nunito",system-ui,sans-serif}
+.card{width:100%;max-width:480px;background:var(--cream);color:var(--ink);border-radius:28px;padding:32px 26px;text-align:center;box-shadow:0 18px 42px #0006}
+.pill{display:inline-block;background:var(--mint);color:var(--ink);font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .75rem;border-radius:999px;font-size:.72rem}
+h1{font-size:clamp(2.6rem,13vw,3.8rem);line-height:.85;letter-spacing:-.06em;margin:.5rem 0 .2rem;color:var(--plum)}
+h1 span{display:block;color:var(--violet);font-size:.5em;letter-spacing:.02em;margin-top:.3rem}
+p{color:#5c5670;margin:14px 0}
+input{width:100%;font:800 20px ui-rounded,system-ui,sans-serif;text-align:center;letter-spacing:2px;text-transform:uppercase;padding:13px;border-radius:14px;border:3px solid var(--lilac);background:#fff;color:var(--ink)}
+input:focus{outline:none;border-color:var(--violet)}
+.btn{display:block;width:100%;margin-top:12px;cursor:pointer;border:0;border-radius:14px;padding:15px;font:900 17px ui-rounded,system-ui,sans-serif;text-decoration:none;color:var(--ink);background:var(--yellow);box-shadow:0 5px 0 #d9b94a;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #d9b94a}
+.btn:disabled{opacity:.55;cursor:wait}
+.msg{min-height:1.4em;margin-top:12px;font-weight:800}
+.msg.err{color:var(--err)}
+ul{list-style:none;text-align:left;margin:16px auto 0;max-width:320px;color:#4a4360;line-height:1.8}
+.tiny{font-size:13px;color:#7a7390;margin-top:18px}
+.tiny a{color:var(--violet)}
+.tip{background:#eee8ff;border-radius:14px;padding:10px 12px;font-size:14px;color:#4a4360;margin-top:16px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main class="card">
+ <span class="pill">2-player game</span>
+ <h1>VIBE CHECK<span>DUEL</span></h1>
+
+ <section id="gate" hidden>
+  <p>Enter the activation code from your order to unlock the game.</p>
+  <form id="f">
+   <input id="code" placeholder="VCD-XXXX-XXXX" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Activation code">
+   <button class="btn" id="go" type="submit">Unlock the game</button>
+  </form>
+  <div class="msg" id="msg" role="alert"></div>
+  <p class="tiny">You only need to enter the code once on each phone or browser.</p>
+ </section>
+
+ <section id="ready" hidden>
+  <p>Your game is unlocked. ✨</p>
+  <a class="btn" href="/play">▶ Play the game</a>
+  <ul>
+   <li>📱 Works on phone, tablet or laptop</li>
+   <li>👥 Two players, 40 rounds</li>
+   <li>💾 Your game saves itself on this device</li>
+  </ul>
+  <div class="tip">📲 <b>Tip:</b> add it to your home screen to open it like an app. On iPhone use Share → <i>Add to Home Screen</i>. On Android use the ⋮ menu → <i>Add to Home screen</i>.</div>
+  <p class="tiny"><a href="#" id="out">Remove access from this browser</a></p>
+ </section>
+</main>
+<script>
+(function(){
+ var $=function(id){return document.getElementById(id)};
+ function show(ok){$('gate').hidden=ok;$('ready').hidden=!ok}
+ fetch('/api/status',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){show(!!j.ok)}).catch(function(){show(false)});
+ $('f').addEventListener('submit',function(e){
+  e.preventDefault();
+  var code=$('code').value.trim().toUpperCase(),m=$('msg');
+  if(!code)return;
+  $('go').disabled=true;m.className='msg';m.textContent='Checking…';
+  fetch('/api/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code})})
+   .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
+   .then(function(x){if(x.ok){m.textContent='';show(true)}else{m.className='msg err';m.textContent=x.j.error||'Invalid activation code.'}})
+   .catch(function(){m.className='msg err';m.textContent='Could not reach the server. Check your connection.'})
+   .then(function(){$('go').disabled=false});
+ });
+ $('out').addEventListener('click',function(e){e.preventDefault();fetch('/api/logout',{method:'POST'}).then(function(){$('code').value='';show(false)})});
+})();
+</script>
+</body>
+</html>
