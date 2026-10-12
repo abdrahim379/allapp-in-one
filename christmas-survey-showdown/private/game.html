@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a3320">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Christmas Survey Showdown</title>
 <style>
 :root{--gold:#f3c94d;--gold2:#b8862f;--green:#0f4a2c;--green2:#0a3320;--burg:#6d1530;--red:#c1272d;--cream:#fff6dc}
@@ -77,6 +80,80 @@ h1.title{font-family:Impact,"Arial Black",sans-serif;text-align:center;letter-sp
 #rlist button{cursor:pointer;width:3.4vh;height:3.4vh;border-radius:50%;border:.2vh solid #2b6a47;background:#0b2c1b;color:#9fc4ad;font:700 1.3vh Arial}
 #rlist button.cur{background:var(--gold);color:#3a2705;border-color:#fff}
 #rlist button.done{background:#7d1a36;color:#fff;border-color:var(--gold)}
+/* ---------- phone & touch ---------- */
+[hidden]{display:none!important}
+button,.row,.sc{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#cont{margin-top:1vh}
+@media (max-width:760px),(max-height:500px){
+ html,body{height:auto;min-height:100%;-webkit-text-size-adjust:100%}
+ html{overflow-x:hidden;overflow-y:auto}body{overflow:visible}
+ #stage{position:relative;min-height:100vh;min-height:100dvh}
+ .bulbs{height:14px;background-size:22px 14px}
+ .bulbs.t{top:max(2px,env(safe-area-inset-top))}.bulbs.b{display:none}
+ .screen{padding:calc(26px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) calc(26px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));min-height:100dvh}
+ .btn{font-size:15px;padding:12px 14px;border-width:2px;border-radius:10px;letter-spacing:.5px;min-height:46px}
+ .btn.sm{font-size:13px;padding:10px 6px}
+ /* title */
+ #s-title{gap:18px}
+ #s-title h1{font-size:15vw}
+ #s-title h1 small{font-size:9vw;margin-top:6px}
+ .teams{gap:10px;width:100%}
+ .teams input{width:auto;flex:1;min-width:0;font-size:18px;padding:12px;border-width:2px}
+ .hint{font-size:15px;max-width:none}
+ #s-title .ctl{width:100%;gap:10px}
+ #s-title .ctl .btn{flex:1 1 140px}
+ /* game */
+ #s-game{gap:10px}
+ .top{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .mid{grid-column:1/-1;grid-row:1}
+ .mid .rn{font-size:13px;letter-spacing:2px}
+ .mid .bank{font-size:40px}.mid .bank small{font-size:13px}
+ .team{width:auto;border-width:2px;border-radius:12px;padding:8px 6px}
+ .team .nm{font-size:14px}
+ .team .sc{font-size:36px;border-radius:8px;margin-top:4px}
+ .team .aw{width:100%;margin-top:6px;font-size:13px;padding:9px 4px;min-height:40px}
+ .team.turn{box-shadow:0 0 18px 4px rgba(255,215,90,.75)}
+ .q{width:100%;font-size:21px;padding:14px 12px;border-width:3px;border-radius:12px}
+ #s-game>.hint{font-size:13px;margin-top:0!important}
+ .board{width:100%;flex:none;gap:8px;grid-template-rows:none!important;grid-auto-rows:58px}
+ .row{border-width:2px;border-radius:10px}
+ .row .cover{font-size:26px}
+ .row .cover i{width:40px;height:40px;line-height:40px;font-size:24px}
+ .row .ans{font-size:18px;padding-left:14px;line-height:1.15}
+ .row .pt{width:64px;font-size:28px;border-left-width:2px}
+ .strikes b{font-size:34vw;-webkit-text-stroke:3px #5a0509}
+ .bottom{position:sticky;bottom:0;z-index:15;flex-direction:column;align-items:stretch;gap:8px;margin:0 -12px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:rgba(6,21,13,.94);border-top:2px solid rgba(243,201,77,.5);box-shadow:0 -10px 24px rgba(0,0,0,.5)}
+ .sx{justify-content:center;gap:8px;min-width:0}
+ .sx span{width:34px;height:34px;font-size:24px;line-height:31px;border-width:2px;border-radius:6px}
+ .bottom .ctl{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;flex-wrap:nowrap}
+ .bottom .ctl+.ctl{grid-template-columns:repeat(4,1fr)}
+ .bottom .btn{min-width:0;white-space:normal;line-height:1.15;overflow-wrap:normal;word-break:normal;letter-spacing:0}
+ .bottom .btn.sm{font-size:12px}
+ #rlist{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;gap:6px;padding:4px 2px 8px;scrollbar-width:thin}
+ #rlist button{flex:none;width:38px;height:38px;font-size:14px;border-width:2px}
+ .keys{display:none}
+ /* final */
+ .final h1{font-size:15vw}
+ .final .wn{font-size:10vw;margin:12px 0}
+ .final .teams .team{width:auto!important;flex:1}
+ .final .ctl{width:100%;gap:10px}.final .ctl .btn{flex:1 1 140px}
+ /* edit modal */
+ .modal{padding:10px}
+ .box{width:100%;height:auto;max-height:92vh;max-height:92dvh;overflow-y:auto;padding:16px;border-width:2px;gap:10px;border-radius:14px}
+ .box h2{font-size:22px}.box p{font-size:13px}
+ .box textarea{min-height:45dvh;font-size:14px}
+ .box .bar{flex-wrap:wrap;gap:6px}.box .bar .btn{flex:1 1 30%}
+}
+@media (max-height:500px) and (min-width:600px){
+ .top{grid-template-columns:1fr auto 1fr}.mid{grid-column:auto;grid-row:auto}
+ .board{grid-template-columns:1fr 1fr;grid-auto-rows:52px}
+ .bottom{position:static;margin:0;flex-direction:row;flex-wrap:wrap;background:none;border:0;box-shadow:none;padding:0}
+ .bottom .ctl{flex:1 1 60%}
+ #s-title h1{font-size:9vw}#s-title h1 small{font-size:5.5vw}
+ .box p{display:none}.box textarea{min-height:40vh;min-height:40dvh}
+}
+@media (max-width:360px){.btn.sm,.bottom .btn.sm{font-size:11px;letter-spacing:0;padding:8px 2px}}
+@media (hover:none){.btn:hover{filter:none}}
 </style>
 </head>
 <body>
@@ -88,6 +165,7 @@ h1.title{font-family:Impact,"Arial Black",sans-serif;text-align:center;letter-sp
   <div class="teams"><input id="tn1" value="Team 1" maxlength="18"><input id="tn2" value="Team 2" maxlength="18"></div>
   <div class="hint">Two teams. Pick a round, reveal the top answers, count the strikes, then award the bank to the team that wins the round. Scores add up automatically. Press <b>E</b> at any time to edit the rounds.</div>
   <div class="ctl"><button class="btn gold" id="start">Start the game</button><button class="btn" id="edit0">Edit rounds</button></div>
+  <div class="ctl" id="cont" hidden><button class="btn red" id="resume">Continue saved game</button></div>
  </section>
 
  <section class="screen" id="s-game">
@@ -180,6 +258,18 @@ if(typeof module!=='undefined')module.exports=Logic;
  var st=Logic.newState(rounds.length);
  var names=['Team 1','Team 2'];var muted=false;
  function $(id){return document.getElementById(id)}
+ /* phones & tablets: no keyboard, so drop the "(X)" key hints from labels */
+ var TOUCH=window.matchMedia&&matchMedia('(hover:none)').matches;
+ function lbl(s){return TOUCH?s.replace(/\s*\((?:[A-Z]|←|→)\)$/,''):s}
+ if(TOUCH){Array.prototype.forEach.call(document.querySelectorAll('.btn'),function(b){b.textContent=lbl(b.textContent)});
+  var gh=document.querySelector('#s-game>.hint');if(gh)gh.textContent='Tap a numbered row to reveal the answer';
+  var th=document.querySelector('#s-title .hint');if(th)th.innerHTML='Two teams. Pick a round, reveal the top answers, count the strikes, then award the bank to the team that wins the round. Scores add up automatically. Tap <b>Edit rounds</b> to change the questions.'}
+ /* save & resume: phones often reload a tab after switching apps */
+ var SAVE='css_game_v1';
+ function saveGame(){safeSet(SAVE,JSON.stringify({st:st,names:names,n:rounds.length}))}
+ function loadGame(){try{var g=JSON.parse(safeGet(SAVE)||'null');if(g&&g.st&&g.n===rounds.length&&g.st.i>=0&&g.st.i<rounds.length)return g}catch(e){}return null}
+ function clearGame(){try{localStorage.removeItem(SAVE)}catch(e){}}
+ function showCont(){var g=loadGame();$('cont').hidden=!g;if(g)$('resume').textContent='Continue saved game (round '+(g.st.i+1)+')'}
  function show(id){['s-title','s-game','s-final'].forEach(function(s){$(s).classList.toggle('on',s===id)})}
  /* sound */
  var ac=null;
@@ -208,10 +298,12 @@ if(typeof module!=='undefined')module.exports=Logic;
    d.onclick=function(){doReveal(k)};bd.appendChild(d);
   });
   var sx=$('sx').children;for(var i=0;i<3;i++)sx[i].className=i<st.strikes?'on':'';
-  $('aw1').textContent='Award bank (Q)';$('aw2').textContent='Award bank (P)';
+  $('aw1').textContent=lbl('Award bank (Q)');$('aw2').textContent=lbl('Award bank (P)');
   $('t1').classList.toggle('turn',st.awarded[0]===0);$('t2').classList.toggle('turn',st.awarded[0]===1);
   var rl=$('rlist');rl.innerHTML='';
   rounds.forEach(function(x,i){var bt=document.createElement('button');bt.textContent=x.n;bt.className=(i===st.i?'cur':(st.visited[i]?'done':''));bt.onclick=function(){go(i)};rl.appendChild(bt)});
+  var cb=rl.children[st.i];if(cb&&rl.scrollWidth>rl.clientWidth)rl.scrollLeft=cb.offsetLeft-rl.clientWidth/2;
+  saveGame();
  }
  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
  function doReveal(k){if(Logic.reveal(st,cur(),k)){snd.ding();render()}}
@@ -233,12 +325,14 @@ if(typeof module!=='undefined')module.exports=Logic;
  $('strike').onclick=doStrike;$('revall').onclick=revealAll;
  $('reset').onclick=function(){Logic.undoAward(st);Logic.resetRound(st);render();snd.tick()};
  $('prev').onclick=function(){go(st.i-1)};$('next').onclick=function(){go(st.i+1)};
- $('mute').onclick=function(){muted=!muted;$('mute').textContent='Sound: '+(muted?'off':'on')+' (M)'};
+ $('mute').onclick=function(){muted=!muted;$('mute').textContent=lbl('Sound: '+(muted?'off':'on')+' (M)')};
  $('fs').onclick=fs;$('fin').onclick=final;$('back').onclick=function(){show('s-game');render()};
- $('newg').onclick=function(){if(confirm('Clear all scores and start again?')){st=Logic.newState(rounds.length);show('s-title')}};
+ $('newg').onclick=function(){if(confirm('Clear all scores and start again?')){st=Logic.newState(rounds.length);clearGame();showCont();show('s-title')}};
+ $('resume').onclick=function(){var g=loadGame();if(!g)return showCont();ctx();st=g.st;names=g.names||names;$('tn1').value=names[0];$('tn2').value=names[1];show('s-game');render()};
+ showCont();
  ['sc1','sc2'].forEach(function(id,t){$(id).onclick=function(){var v=prompt('Set the score for '+names[t],st.s[t]);if(v!==null&&!isNaN(parseInt(v,10))){st.s[t]=parseInt(v,10);render()}}});
  $('bcan').onclick=function(){$('m-edit').classList.remove('on')};
- $('bsave').onclick=function(){var r=Logic.parseText($('ed').value);if(!r.length){alert('No valid rounds found. Check the format.');return}rounds=r;safeSet('css_rounds_v1',$('ed').value);st=Logic.newState(rounds.length);$('m-edit').classList.remove('on');if($('s-game').classList.contains('on')){Logic.goto(st,0,rounds.length);render()}};
+ $('bsave').onclick=function(){var r=Logic.parseText($('ed').value);if(!r.length){alert('No valid rounds found. Check the format.');return}rounds=r;safeSet('css_rounds_v1',$('ed').value);st=Logic.newState(rounds.length);clearGame();showCont();$('m-edit').classList.remove('on');if($('s-game').classList.contains('on')){Logic.goto(st,0,rounds.length);render()}};
  $('brst').onclick=function(){if(confirm('Replace your rounds with the original 50?')){rounds=ORIGINAL.slice();try{localStorage.removeItem('css_rounds_v1')}catch(e){}$('ed').value=Logic.toText(rounds)}};
  $('bexp').onclick=function(){var blob=new Blob([$('ed').value],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-rounds.txt';a.click()};
  $('bimp').onclick=function(){$('imp').click()};
