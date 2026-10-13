@@ -7,8 +7,10 @@ Routes
   POST /api/tiktok/extract      {url}           -> {videos:[...]}
   GET  /api/tiktok/download?url=...&id=...      -> video/mp4
   POST /api/chat                {messages}      -> text/plain stream (AI Gateway)
+  POST /api/ask                 {question, previous_response_id?}
+                                                -> {id, answer, citations, sources} (Perplexity)
 
-TikTok and chat routes require the access token (header X-Access-Token or ?token=).
+TikTok, chat and ask routes require the access token (header X-Access-Token or ?token=).
 All video/image processing runs in the browser (ffmpeg.wasm), not here.
 """
 
@@ -240,6 +242,61 @@ def chat():
 @app.get("/api/chat/info")
 def chat_info():
     return jsonify(model=CHAT_MODEL)
+
+
+# ── Web-grounded answers (Perplexity Agent API) ───────────────
+# The SDK reads PERPLEXITY_API_KEY from the environment and posts to
+# /v1/responses (the documented alias of /v1/agent). Presets: fast, low,
+# medium, high, xhigh — see docs.perplexity.ai/docs/agent-api/presets.
+ASK_PRESET = os.environ.get("PERPLEXITY_PRESET", "fast")
+
+
+def _ask_payload(resp) -> dict:
+    sources, citations = [], []
+    for item in resp.output:
+        if item.type == "search_results":
+            sources += [{"title": r.title, "url": r.url, "date": r.date} for r in item.results]
+        elif item.type == "message":
+            for part in item.content:
+                for a in getattr(part, "annotations", None) or []:
+                    if a.url and a.url not in {c["url"] for c in citations}:
+                        citations.append({"title": a.title, "url": a.url})
+    return {"id": resp.id, "model": resp.model, "answer": resp.output_text,
+            "citations": citations, "sources": sources}
+
+
+@app.post("/api/ask")
+def ask():
+    if not _token_ok():
+        return _deny()
+    body = request.get_json(silent=True) or {}
+    question = str(body.get("question") or "").strip()[:8000]
+    if not question:
+        return jsonify(error="Empty question."), 400
+    if not os.environ.get("PERPLEXITY_API_KEY"):
+        return jsonify(error="Web answers are not configured (PERPLEXITY_API_KEY is not set)."), 500
+
+    import perplexity
+    params = {"preset": ASK_PRESET, "input": question, "tools": [{"type": "web_search"}]}
+    prev = str(body.get("previous_response_id") or "").strip()
+    if prev:
+        params["previous_response_id"] = prev
+    try:
+        resp = perplexity.Perplexity(timeout=280).responses.create(**params)
+    except perplexity.RateLimitError as e:
+        out = jsonify(error="Perplexity rate limit reached. Try again shortly.")
+        retry = e.response.headers.get("retry-after")
+        return (out, 429, {"Retry-After": retry}) if retry else (out, 429)
+    except perplexity.AuthenticationError:
+        return jsonify(error="Perplexity rejected the API key (401). Check PERPLEXITY_API_KEY."), 502
+    except perplexity.APIStatusError as e:
+        return jsonify(error=f"Perplexity {e.status_code}: {e.message}"), 502
+    except perplexity.APIConnectionError as e:
+        return jsonify(error=f"Perplexity unreachable: {e}"), 502
+    if resp.status != "completed":
+        detail = resp.error.message if resp.error else resp.status
+        return jsonify(error=f"Perplexity response {resp.status}: {detail}"), 502
+    return jsonify(_ask_payload(resp))
 
 
 # ── Local development: serve the static site too ─────────────

@@ -33,7 +33,7 @@
   <main id="app" hidden>
     <header class="hero">
       <h1>🚀 ALL APP IN ONE</h1>
-      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler · AI chat</p>
+      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler · AI chat · Web answers</p>
     </header>
 
     <nav class="tabs" role="tablist">
@@ -44,6 +44,7 @@
       <button role="tab" data-tab="webp">🔄 → WebP</button>
       <button role="tab" data-tab="up">🎬 Video Upscaler</button>
       <button role="tab" data-tab="chat">💬 AI Chat</button>
+      <button role="tab" data-tab="ask">🔎 Web Answers</button>
     </nav>
 
     <!-- HOME -->
@@ -57,6 +58,7 @@
         <div class="tool-card" data-go="webp"><h3>🔄 → WebP Converter <span class="badge">NEW</span></h3><p>Convert PNG, JPG, BMP, TIFF, GIF → WebP. Batch processing, quality control, lossless mode.</p></div>
         <div class="tool-card" data-go="up"><h3>🎬 Video Upscaler <span class="badge">NEW</span></h3><p>Upscale videos to 720p / 1080p / 4K with ffmpeg LANCZOS + optional sharpen + denoise.</p></div>
         <div class="tool-card" data-go="chat"><h3>💬 AI Chat <span class="badge">NEW</span></h3><p>Chat with the stealth/pixel-canary model through the Vercel AI Gateway, with answers streamed live.</p></div>
+        <div class="tool-card" data-go="ask"><h3>🔎 Web Answers <span class="badge">NEW</span></h3><p>Ask anything and get a current answer searched on the web by Perplexity, with links to its sources. Ask follow-ups in the same thread.</p></div>
       </div>
       <hr>
       <div class="metrics">
@@ -281,6 +283,20 @@
         </div>
       </form>
       <div id="chat-msg" class="msg"></div>
+    </section>
+    <!-- WEB ANSWERS -->
+    <section class="panel" data-panel="ask" hidden>
+      <h2>🔎 Web Answers</h2>
+      <p class="muted">Answers searched live on the web by the Perplexity Agent API, with sources. Follow-up questions continue the same thread.</p>
+      <div id="ask-log" class="chat-log" aria-live="polite"></div>
+      <form id="ask-form" class="chat-form">
+        <textarea id="ask-input" rows="3" placeholder="Ask a question… (Enter to send, Shift+Enter for a new line)"></textarea>
+        <div class="row">
+          <button class="btn primary grow" id="ask-send" type="submit">🔎 Ask</button>
+          <button class="btn" id="ask-new" type="button">🗑️ New thread</button>
+        </div>
+      </form>
+      <div id="ask-msg" class="msg"></div>
     </section>
   </main>
 

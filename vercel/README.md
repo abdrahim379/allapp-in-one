@@ -42,6 +42,12 @@ vercel/
   specific key, set `AI_GATEWAY_API_KEY`. The optional `CHAT_MODEL` changes
   the model (default `stealth/pixel-canary`). `/api/chat` needs an
   activation token, so strangers can't spend your credits.
+- **Web Answers:** set `PERPLEXITY_API_KEY` (create one at
+  https://console.perplexity.ai) as a Vercel env var. `/api/ask` calls the
+  Perplexity Agent API with the `web_search` tool and returns the answer
+  with its sources; follow-ups pass `previous_response_id`. The optional
+  `PERPLEXITY_PRESET` picks the preset (`fast` by default; also `low`,
+  `medium`, `high`, `xhigh`). It needs an activation token too.
 
 ## Run locally
 ```bash
