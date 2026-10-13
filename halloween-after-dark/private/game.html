@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#100d1b"><link rel="icon" href="/icon-192.png"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
+<title>Halloween After Dark — Party Game</title>
+<style>
+:root{--bg:#100d1b;--panel:#1b1730;--panel2:#241e3d;--ink:#fff8ef;--muted:#b8aecf;--orange:#ff8b35;--pink:#ff5f87;--green:#73e0ad;--line:#40375c;--gold:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#2a1743 0,#100d1b 48%,#0b0913 100%);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+button,select,input{font:inherit}button{cursor:pointer;border:0;border-radius:13px;padding:12px 16px;font-weight:800;transition:.15s transform,.15s filter}button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.primary{background:linear-gradient(135deg,var(--orange),#ffb34f);color:#241229}.secondary{background:#352b53;color:var(--ink);border:1px solid #51456f}.soft{background:#29223f;color:var(--ink);border:1px solid var(--line)}.danger{background:#51263f;color:#ffdbe5}.good{background:#174b3d;color:#d8fff0}
+header{max-width:1240px;margin:auto;padding:24px 24px 10px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#ff8b35,#ff5f87);font-size:27px;box-shadow:0 8px 28px #ff8b3526}.brand h1{font-size:clamp(22px,4vw,32px);line-height:1.05;margin:0;letter-spacing:-.7px}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}.topstats{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#211b36;border:1px solid var(--line);padding:8px 12px;border-radius:999px;color:var(--muted);font-size:13px}.pill b{color:var(--gold)}
+.layout{max-width:1240px;margin:auto;padding:14px 24px 44px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:20px}.sidebar,.main{background:#171327d9;border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 55px #0003}.sidebar{padding:18px;height:max-content;position:sticky;top:12px}.side-title{font-size:11px;text-transform:uppercase;letter-spacing:1.6px;color:#8f83ae;font-weight:900;margin:8px 10px}.nav{display:grid;gap:7px}.nav button{display:flex;align-items:center;gap:10px;text-align:left;background:transparent;color:var(--muted);border:1px solid transparent;padding:11px 12px}.nav button.active{background:#302441;color:white;border-color:#60446d}.nav .emoji{width:25px;text-align:center;font-size:18px}.side-foot{border-top:1px solid var(--line);margin-top:18px;padding-top:16px;color:var(--muted);font-size:12px}
+.main{padding:clamp(18px,3vw,30px);min-height:620px}.eyebrow{color:var(--orange);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1.8px}.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;align-items:center;background:linear-gradient(120deg,#332047,#1c1831 75%);border:1px solid #594068;border-radius:20px;padding:clamp(20px,4vw,34px);overflow:hidden}.hero h2{font-size:clamp(30px,5vw,48px);line-height:1.02;letter-spacing:-1.5px;margin:8px 0 12px}.hero p{color:#d0c4e0;max-width:560px}.hero-art{text-align:center;font-size:clamp(70px,12vw,126px);filter:drop-shadow(0 10px 20px #ff8b3533);transform:rotate(-5deg)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:28px 0 13px}.section-head h3{margin:0;font-size:22px}.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.game-card{background:linear-gradient(145deg,#25203d,#1b172d);border:1px solid var(--line);border-radius:17px;padding:17px;display:flex;flex-direction:column;min-height:180px}.game-card .icon{font-size:28px}.game-card h4{margin:8px 0 5px;font-size:16px}.game-card p{margin:0;color:var(--muted);font-size:13px;flex:1}.game-card .card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:15px}.tag{font-size:11px;color:#ffc17f;background:#513423;border-radius:999px;padding:4px 8px;font-weight:800}.game-card button{padding:8px 11px;font-size:12px}
+.panel{background:#201a34;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:18px}.panel h3{margin:0 0 12px}.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:grid;gap:6px}.field label{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px}.field select,.field input{background:#120f20;color:var(--ink);border:1px solid #4a3d67;border-radius:11px;padding:11px;width:100%}.help{color:var(--muted);font-size:12px;margin-top:10px}
+.play-top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.progress{height:7px;background:#332a4a;border-radius:999px;overflow:hidden;margin:16px 0 22px}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--pink));transition:width .3s}.question-box{background:linear-gradient(145deg,#2b2143,#20192f);border:1px solid #544168;border-radius:20px;padding:clamp(20px,4vw,34px);margin:14px 0}.q-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:12px}.question-box h2{font-size:clamp(23px,4vw,34px);line-height:1.2;margin:18px 0 22px}.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.answer{background:#19152a;border:1px solid #514269;color:var(--ink);text-align:left;min-height:58px}.answer.correct{border-color:var(--green);background:#164b3b}.answer.wrong{border-color:var(--pink);background:#52243c}.answer:disabled{cursor:default;transform:none}.feedback{padding:13px 15px;border-radius:12px;background:#171327;margin-top:14px;color:#dcd2eb}.feedback strong{color:var(--gold)}.play-bottom{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:16px}.timer{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:900}.empty{text-align:center;padding:35px 15px}.empty .big{font-size:70px}.empty h2{font-size:28px}.empty p{color:var(--muted)}.scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.score{background:#211b36;border:1px solid var(--line);border-radius:14px;padding:15px}.score span{display:block;color:var(--muted);font-size:12px}.score strong{font-size:25px;color:var(--gold)}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}.player-card{background:#211b36;border:1px solid var(--line);border-radius:16px;padding:18px}.player-card h4{margin:0 0 8px}.player-card .pts{font-size:30px;color:var(--gold);font-weight:900}.history-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:12px 0;color:var(--muted)}.history-row:last-child{border:0}.memo{text-align:center;padding:10px 0 4px}.memo-items{font-size:clamp(24px,5vw,38px);font-weight:900;letter-spacing:1px;margin:14px 0 20px;color:var(--gold)}[hidden]{display:none!important}button:disabled:not(.answer){opacity:.45;cursor:not-allowed;filter:none;transform:none}@media(max-width:900px){body.playing .sidebar{display:none}}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff1d8;color:#271a22;padding:12px 18px;border-radius:12px;font-weight:800;box-shadow:0 8px 30px #0006;display:none;z-index:5}
+footer{max-width:1240px;margin:auto;padding:0 24px 28px;color:#8e83a6;font-size:12px;text-align:center}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static}.nav{grid-template-columns:repeat(2,minmax(0,1fr))}.side-foot{display:none}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr .35fr}.hero-art{font-size:75px}}
+@media(max-width:580px){header{padding:18px 14px 8px}.layout{padding:10px 14px 30px}.main{padding:15px;min-height:500px}.sidebar{padding:12px}.nav{grid-template-columns:1fr 1fr}.nav button{font-size:12px;padding:9px}.cards{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero-art{display:none}.settings-grid,.answers,.two-col{grid-template-columns:1fr}.scoreboard{grid-template-columns:1fr 1fr}.scoreboard .score:last-child{grid-column:span 2}.topstats{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">🎃</div><div><h1>HALLOWEEN <span style="color:var(--orange)">AFTER DARK</span></h1><p>The replayable spooky party game • One device, solo or pass-and-play</p></div></div>
+  <div class="topstats"><div class="pill">🏆 Best score: <b id="bestScore">0</b></div><div class="pill">🔥 Streak: <b id="streak">0</b></div><div class="pill">🎮 Games played: <b id="gamesPlayed">0</b></div></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="side-title">Your haunted house</div>
+  <nav class="nav" id="nav">
+    <button class="active" data-page="home"><span class="emoji">🏚️</span> Home & modes</button>
+    <button data-page="play"><span class="emoji">🕯️</span> Quick play</button>
+    <button data-page="categories"><span class="emoji">🦇</span> Game library</button>
+    <button data-page="duel"><span class="emoji">👻</span> Two-player mode</button>
+    <button data-page="daily"><span class="emoji">🌙</span> Daily challenge</button>
+    <button data-page="achievements"><span class="emoji">🏆</span> Achievements</button>
+    <button data-page="how"><span class="emoji">📜</span> How to play</button>
+  </nav>
+  <div class="side-foot">✨ Built for family nights, friends, couples, kids + grown-ups. Choose a kid-friendly setting to keep the scares gentle.</div>
+</aside>
+<main class="main" id="main"></main>
+</div>
+<footer>Halloween After Dark · DesignFRshop · Your scores and settings stay in this browser on this device. · <a href="/" style="color:#b8aecf">Game home</a></footer>
+<div class="toast" id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const state={page:'home',mode:'solo',difficulty:'mixed',age:'family',category:'all',rounds:10,players:['Player 1','Player 2'],current:0,round:0,score:0,streak:0,answered:false,deck:[],history:[],duelScores:[0,0],daily:false};
+const BANK={
+ trivia:[
+ {q:'Which vegetable is most associated with Halloween lanterns?',a:['Pumpkin','Cucumber','Potato','Onion'],c:0,e:'Pumpkins are carved into glowing jack-o’-lanterns.',d:1,cat:'Trivia',kid:true},
+ {q:'What is the name of the famous vampire who lives in a castle?',a:['Frankenstein','Dracula','Casper','Bigfoot'],c:1,e:'Count Dracula comes from Bram Stoker’s classic vampire novel.',d:1,cat:'Trivia',kid:true},
+ {q:'What do bats use to navigate in the dark?',a:['Magic','Echolocation','Moonlight only','Whiskers'],c:1,e:'Many bats use echoes from their calls to locate objects.',d:2,cat:'Trivia',kid:true},
+ {q:'Which color is commonly paired with orange for Halloween?',a:['Purple','Sky blue','Mint','Beige'],c:0,e:'Orange and purple are classic spooky-season colors.',d:1,cat:'Trivia',kid:true},
+ {q:'What is a group of witches traditionally said to ride?',a:['A broomstick','A skateboard','A bicycle','A surfboard'],c:0,e:'The broomstick is a classic folklore image.',d:1,cat:'Trivia',kid:true},
+ {q:'What is the fear of spiders called?',a:['Arachnophobia','Acrophobia','Claustrophobia','Nyctophobia'],c:0,e:'Arachnophobia is the fear of spiders.',d:2,cat:'Trivia',kid:true},
+ {q:'Which creature is said to transform during a full moon?',a:['Werewolf','Mermaid','Phoenix','Unicorn'],c:0,e:'Werewolves are a familiar figure in folklore.',d:1,cat:'Trivia',kid:true},
+ {q:'In spooky stories, what does a ghost usually say?',a:['Boo!','Olé!','Yeehaw!','Howdy!'],c:0,e:'A classic ghostly greeting: “Boo!”',d:1,cat:'Trivia',kid:true},
+ {q:'Which author wrote the novel Dracula?',a:['Mary Shelley','Bram Stoker','Edgar Rice Burroughs','Jules Verne'],c:1,e:'Bram Stoker’s Dracula was published in 1897.',d:3,cat:'Trivia',kid:false},
+ {q:'Which ancient festival is often linked to Halloween’s origins?',a:['Samhain','Saturnalia','Diwali','Lupercalia'],c:0,e:'Samhain was a Celtic seasonal festival.',d:3,cat:'Trivia',kid:false},
+ {q:'What is the name of the scientist in Mary Shelley’s Frankenstein?',a:['Victor Frankenstein','Henry Jekyll','Van Helsing','Ichabod Crane'],c:0,e:'Victor Frankenstein is the creator in Shelley’s novel.',d:3,cat:'Trivia',kid:false},
+ {q:'Which classic monster is traditionally repelled by a specific bulb?',a:['Vampire','Mummy','Werewolf','Zombie'],c:0,e:'Garlic is a traditional vampire deterrent in folklore.',d:2,cat:'Trivia',kid:true},
+ {q:'What is the fear of the dark called?',a:['Nyctophobia','Agoraphobia','Trypophobia','Ophidiophobia'],c:0,e:'Nyctophobia is a fear of darkness or night.',d:3,cat:'Trivia',kid:false},
+ {q:'Which creature is known for leaving a trail of slime?',a:['Slug','Bat','Crow','Skeleton'],c:0,e:'Slugs produce mucus as they move.',d:2,cat:'Trivia',kid:true},
+ {q:'What do you call a story meant to frighten its audience?',a:['Ghost story','Travelogue','Recipe','Lullaby'],c:0,e:'Ghost stories are made to thrill or frighten.',d:1,cat:'Trivia',kid:true},
+ {q:'What is the traditional Halloween game of trying to catch floating apples with your teeth?',a:['Apple bobbing','Apple tossing','Apple rolling','Apple hunting'],c:0,e:'Apple bobbing (bobbing for apples) is an old Halloween party game.',d:1,cat:'Trivia',kid:true},
+ {q:'Which month is Halloween in?',a:['October','September','November','December'],c:0,e:'Halloween is on October 31.',d:1,cat:'Trivia',kid:true},
+ {q:'What do children usually say at the door on Halloween?',a:['Trick or treat!','Happy holidays!','Good morning!','See you later!'],c:0,e:'“Trick or treat!” is the classic doorstep greeting.',d:1,cat:'Trivia',kid:true},
+ {q:'Which animal is often shown sitting on a witch’s broom?',a:['A black cat','A goldfish','A cow','A penguin'],c:0,e:'Black cats are classic witch companions in stories.',d:1,cat:'Trivia',kid:true},
+ {q:'What is a group of bats called?',a:['A colony','A herd','A pack','A school'],c:0,e:'Bats live together in a colony.',d:2,cat:'Trivia',kid:true},
+ {q:'Which country is most linked to the origins of the jack-o’-lantern tradition?',a:['Ireland','Brazil','Japan','Egypt'],c:0,e:'Carving lanterns (first from turnips) comes from Irish and Scottish tradition.',d:3,cat:'Trivia',kid:false},
+ {q:'Before pumpkins, what vegetable was often carved into lanterns in Ireland and Scotland?',a:['Turnips','Carrots','Cabbages','Peppers'],c:0,e:'Turnips and other root vegetables were carved before pumpkins became popular.',d:3,cat:'Trivia',kid:true},
+ {q:'How many legs does a spider have?',a:['8','6','10','12'],c:0,e:'Spiders have eight legs; insects have six.',d:1,cat:'Trivia',kid:true},
+ {q:'What are wrapped Egyptian mummies covered in?',a:['Linen bandages','Paper towels','Leaves','Wool blankets'],c:0,e:'Ancient Egyptians wrapped mummies in strips of linen.',d:2,cat:'Trivia',kid:true},
+ {q:'Which bird is famous for hooting at night?',a:['Owl','Parrot','Flamingo','Penguin'],c:0,e:'Many owls are active at night and hoot to communicate.',d:1,cat:'Trivia',kid:true},
+ {q:'In which year was Mary Shelley’s Frankenstein first published?',a:['1818','1718','1918','1868'],c:0,e:'Frankenstein was first published in 1818.',d:4,cat:'Trivia',kid:false},
+ {q:'What is the day after Halloween called in many Christian traditions?',a:['All Saints’ Day','Boxing Day','Leap Day','May Day'],c:0,e:'All Saints’ Day is on November 1.',d:3,cat:'Trivia',kid:false}
+ ],
+ fiction:[
+ {q:'Fact or fiction: A group of crows can be called a “murder.”',a:['Fact','Fiction'],c:0,e:'“Murder” is a recognized collective noun for crows.',d:2,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: All bats are blind.',a:['Fact','Fiction'],c:1,e:'Bats can see; many also use echolocation.',d:2,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: An octopus has three hearts.',a:['Fact','Fiction'],c:0,e:'Octopuses have three hearts, and their blood is blue.',d:3,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: Pumpkins are technically fruits.',a:['Fact','Fiction'],c:0,e:'Botanically, pumpkins are fruits because they develop from flowers and contain seeds.',d:3,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: A full moon makes people turn into werewolves.',a:['Fact','Fiction'],c:1,e:'Werewolves are part of folklore, not real biology.',d:1,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: Some spiders can travel through the air using silk.',a:['Fact','Fiction'],c:0,e:'Some spiders balloon using strands of silk carried by air currents.',d:3,cat:'Fact or Fiction',kid:false},
+ {q:'Fact or fiction: Black cats are bad luck in every culture.',a:['Fact','Fiction'],c:1,e:'Beliefs about black cats vary widely by culture.',d:2,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: Mummies were only ever made in Egypt.',a:['Fact','Fiction'],c:1,e:'Mummification occurred in several cultures around the world.',d:3,cat:'Fact or Fiction',kid:false},
+ {q:'Fact or fiction: Owls can turn their heads all the way around, 360 degrees.',a:['Fact','Fiction'],c:1,e:'Owls can turn their heads about 270 degrees, not a full circle.',d:3,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: Some bats drink fruit nectar.',a:['Fact','Fiction'],c:0,e:'Many bats feed on nectar and fruit and help pollinate plants.',d:2,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: Pumpkins only come in orange.',a:['Fact','Fiction'],c:1,e:'Pumpkins can be white, green, yellow, blue-grey and striped.',d:1,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: Candy corn was invented in the 1880s.',a:['Fact','Fiction'],c:0,e:'Candy corn dates back to the 1880s in the United States.',d:4,cat:'Fact or Fiction',kid:false},
+ {q:'Fact or fiction: Spiders are insects.',a:['Fact','Fiction'],c:1,e:'Spiders are arachnids, not insects.',d:2,cat:'Fact or Fiction',kid:true},
+ {q:'Fact or fiction: A full moon happens about once a month.',a:['Fact','Fiction'],c:0,e:'The moon goes through its phases in about 29.5 days.',d:2,cat:'Fact or Fiction',kid:true}
+ ],
+ riddles:[
+ {q:'I have a face and two hands, but no arms or legs. What am I?',a:['A clock','A scarecrow','A doll','A portrait'],c:0,e:'A clock has a face and hands.',d:1,cat:'Riddles',kid:true},
+ {q:'The more you take, the more you leave behind. What are they?',a:['Footsteps','Candies','Photographs','Secrets'],c:0,e:'Every step leaves another footprint.',d:2,cat:'Riddles',kid:true},
+ {q:'I get bigger the more you take away from me. What am I?',a:['A hole','A candle','A shadow','A balloon'],c:0,e:'Removing more material makes a hole bigger.',d:2,cat:'Riddles',kid:true},
+ {q:'I can be cracked, made, told, and played. What am I?',a:['A joke','A window','A spell','A drum'],c:0,e:'You can crack, make, tell, or play a joke.',d:2,cat:'Riddles',kid:true},
+ {q:'I follow you all day but disappear at night. What am I?',a:['Your shadow','Your shoes','Your echo','Your reflection'],c:0,e:'Your shadow needs light to appear.',d:1,cat:'Riddles',kid:true},
+ {q:'I have many keys but cannot open a single lock. What am I?',a:['A piano','A treasure chest','A jailer','A keyring'],c:0,e:'A piano has keys for musical notes.',d:2,cat:'Riddles',kid:true},
+ {q:'I speak without a mouth and hear without ears. I come alive with wind. What am I?',a:['An echo','A tree','A ghost','A bell'],c:0,e:'An echo repeats sounds without a mouth or ears.',d:3,cat:'Riddles',kid:false},
+ {q:'What disappears the moment you say its name?',a:['Silence','A secret','A shadow','A dream'],c:0,e:'Saying something breaks the silence.',d:3,cat:'Riddles',kid:false},
+ {q:'What room can no ghost ever enter?',a:['The living room','The kitchen','The attic','The basement'],c:0,e:'Ghosts are not living — so no living room for them!',d:2,cat:'Riddles',kid:true},
+ {q:'Why didn’t the skeleton go to the party?',a:['He had no body to go with','He was too tired','He lost his hat','He was scared of the dark'],c:0,e:'No BODY to go with!',d:1,cat:'Riddles',kid:true},
+ {q:'What has roots that nobody sees, is taller than trees, yet never grows?',a:['A mountain','A ghost','A tower','A shadow'],c:0,e:'A mountain: hidden roots, very tall, never grows.',d:3,cat:'Riddles',kid:true},
+ {q:'What has a neck but no head?',a:['A bottle','A ghost','A scarecrow','A coat'],c:0,e:'A bottle has a neck but no head.',d:1,cat:'Riddles',kid:true},
+ {q:'What can fill a room but takes up no space?',a:['Light','Fog','A ghost','Air freshener'],c:0,e:'Light fills a room without taking up space.',d:3,cat:'Riddles',kid:true},
+ {q:'What has one eye but cannot see?',a:['A needle','A cyclops','A potato','A camera'],c:0,e:'A needle has an eye for the thread.',d:2,cat:'Riddles',kid:true}
+ ],
+ scramble:[
+ {q:'Unscramble: PMUPKNI',a:['PUMPKIN','PUMPKEN','PUMPKINN','PUNKIMP'],c:0,e:'PUMPKIN — the classic Halloween fruit.',d:1,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: TSGHO',a:['GHOST','SHOUT','GHOSTS','GOTHS'],c:0,e:'GHOST.',d:1,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: RDEIPS',a:['SPIDER','PRIDES','SPIRED','DRIPES'],c:0,e:'SPIDER.',d:2,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: PEVAMIR',a:['VAMPIRE','IMPERVA','PRIVAME','VAMPER'],c:0,e:'VAMPIRE.',d:2,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: KESLETNO',a:['SKELETON','SKELETNO','KNOTSLEE','STONEKEL'],c:0,e:'SKELETON.',d:3,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: WERWLOFE',a:['WEREWOLF','WOLFWERE','FLOWERWE','WEREFLOW'],c:0,e:'WEREWOLF.',d:3,cat:'Word Scramble',kid:false},
+ {q:'Unscramble: WOLLEHANE',a:['HALLOWEEN','HALOWEEN','HALLOWEN','HALLOWENE'],c:0,e:'HALLOWEEN is spelled H-A-L-L-O-W-E-E-N.',d:3,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: DORLACUN',a:['CAULDRON','CALDRONU','UNCLOARD','CANDLOUR'],c:0,e:'CAULDRON — a witch’s big bubbling pot.',d:4,cat:'Word Scramble',kid:false},
+ {q:'Unscramble: TBA',a:['BAT','TAB','ABT','BTA'],c:0,e:'BAT.',d:1,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: CHITW',a:['WITCH','WHICT','TWICH','CHWIT'],c:0,e:'WITCH.',d:1,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: DACNY',a:['CANDY','DANCY','CYDAN','NACDY'],c:0,e:'CANDY.',d:1,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: MMMYU',a:['MUMMY','MYMUM','MUMYM','YUMMM'],c:0,e:'MUMMY.',d:2,cat:'Word Scramble',kid:true},
+ {q:'Unscramble: KOBRCMOIST',a:['BROOMSTICK','BROOMSTIKA','STICKBROOM','MOBSTRICK'],c:0,e:'BROOMSTICK.',d:4,cat:'Word Scramble',kid:false},
+ {q:'Unscramble: CROSCREWA',a:['SCARECROW','CROWSCARE','SCARCECRO','RACESCROW'],c:0,e:'SCARECROW.',d:3,cat:'Word Scramble',kid:true}
+ ],
+ movie:[
+ {q:'In horror films, what is usually the safest choice?',a:['Investigate the strange noise alone','Stay together and think','Split up immediately','Ignore all exits'],c:1,e:'Classic horror logic says: stick together and stay aware.',d:1,cat:'Horror Movie Logic',kid:true},
+ {q:'Which prop is a classic symbol of a haunted house?',a:['Creaking door','Beach umbrella','Picnic basket','Sunglasses'],c:0,e:'Creaking doors help create the spooky atmosphere.',d:1,cat:'Horror Movie Logic',kid:true},
+ {q:'A character says “I’ll be right back.” What do you expect in a horror movie?',a:['A calm ending','Trouble ahead','A cooking show','A dance lesson'],c:1,e:'It is a famous horror-movie warning sign.',d:2,cat:'Horror Movie Logic',kid:true},
+ {q:'Which setting is most associated with a classic ghost story?',a:['An old mansion','A bright supermarket','A sunny sports field','A modern office at lunch'],c:0,e:'Old mansions are a staple of ghost stories.',d:1,cat:'Horror Movie Logic',kid:true},
+ {q:'What is a “jump scare” designed to do?',a:['Startle the audience','Explain the backstory','Make a meal','Change the scene color'],c:0,e:'A jump scare uses a sudden image or sound to startle viewers.',d:2,cat:'Horror Movie Logic',kid:false},
+ {q:'Which phrase is most likely to make a horror audience nervous?',a:['“Let’s check the basement.”','“Dinner is ready.”','“Lovely weather.”','“The bus is here.”'],c:0,e:'Basements and unexplained noises are horror staples.',d:2,cat:'Horror Movie Logic',kid:true},
+ {q:'The lights flicker in a horror movie. What usually happens next?',a:['Something spooky appears','A pizza arrives','Everyone goes to sleep','The credits roll'],c:0,e:'Flickering lights are a classic sign that something is coming.',d:1,cat:'Horror Movie Logic',kid:true},
+ {q:'In a spooky story, where is the mysterious sound usually coming from?',a:['The attic or basement','The front lawn at noon','A busy café','A sunny beach'],c:0,e:'Attics and basements are the classic places for strange noises.',d:1,cat:'Horror Movie Logic',kid:true},
+ {q:'What does a creepy old music box usually signal in a spooky film?',a:['A mystery is about to start','It is lunchtime','Someone won a prize','The weather is changing'],c:0,e:'Music boxes are a favourite way to build suspense.',d:2,cat:'Horror Movie Logic',kid:true},
+ {q:'Which choice gives a horror-movie character the best chance?',a:['Turn on the lights and call a friend','Walk into the dark woods alone','Read the strange old spell out loud','Open the locked door at midnight'],c:0,e:'Light + a friend beats every other horror-movie choice.',d:2,cat:'Horror Movie Logic',kid:true}
+ ],
+ choice:[
+ {q:'Would you rather explore a friendly haunted library or a mysterious moonlit garden?',a:['Haunted library 📚','Moonlit garden 🌙'],c:-1,e:'There is no wrong answer. Tell the group why!',d:1,cat:'Would You Rather',kid:true,fun:true},
+ {q:'Would you rather have a tiny friendly ghost roommate or a cat that can talk?',a:['Friendly ghost 👻','Talking cat 🐈‍⬛'],c:-1,e:'Make your case to the group.',d:1,cat:'Would You Rather',kid:true,fun:true},
+ {q:'Would you rather never be scared by a movie again or always know the ending?',a:['Never scared','Always know the ending'],c:-1,e:'Choose your spooky superpower.',d:2,cat:'Would You Rather',kid:true,fun:true},
+ {q:'Would you rather spend a night in a castle or a treehouse in a dark forest?',a:['Castle 🏰','Forest treehouse 🌲'],c:-1,e:'Bonus: explain how you would decorate it.',d:1,cat:'Would You Rather',kid:true,fun:true},
+ {q:'Would you rather be able to talk to bats or understand every cat?',a:['Talk to bats','Understand cats'],c:-1,e:'Which power would cause more chaos?',d:2,cat:'Would You Rather',kid:true,fun:true},
+ {q:'Would you rather have to whisper for a whole day or speak like a dramatic movie villain?',a:['Whisper all day','Villain voice'],c:-1,e:'Try your chosen option for the next minute.',d:2,cat:'Would You Rather',kid:true,fun:true},
+ {q:'Would you rather be followed by spooky music or a tiny cloud of fog?',a:['Spooky soundtrack','Tiny fog cloud'],c:-1,e:'Which would be more inconvenient?',d:3,cat:'Would You Rather',kid:false,fun:true},
+ {q:'Would you rather solve a haunted-house mystery or design the perfect monster costume?',a:['Solve the mystery','Design a costume'],c:-1,e:'No wrong answers—make it convincing.',d:2,cat:'Would You Rather',kid:true,fun:true}
+ ],
+ dares:[
+ {q:'Spooky challenge: Make your best ghost noise for 5 seconds.',a:['Done!','Pass this round'],c:-1,e:'Award yourself 1 bonus point for full commitment.',d:1,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Tell a scary story in exactly three sentences.',a:['Challenge complete','Pass this round'],c:-1,e:'Extra point if someone laughs or gets chills.',d:2,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Act like a zombie trying to remember where it parked.',a:['Challenge complete','Pass this round'],c:-1,e:'Bonus point for staying in character.',d:1,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Name five spooky things in ten seconds.',a:['I did it!','I need more time'],c:-1,e:'Try: bat, broom, ghost, pumpkin, spider.',d:2,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Give a dramatic weather forecast for a haunted forest.',a:['Forecast delivered','Pass this round'],c:-1,e:'Bonus point for using the words “mysterious” and “fog.”',d:3,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Without laughing, say “tiny terrifying toads” three times fast.',a:['Nailed it','I laughed!'],c:-1,e:'If you laughed, you still get a point for trying.',d:2,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Invent a name for a friendly monster and explain its superpower.',a:['Monster invented','Pass this round'],c:-1,e:'Best monster name wins a bonus point by group vote.',d:1,cat:'Silly Challenges',kid:true,fun:true},
+ {q:'Do a slow-motion vampire entrance into the room.',a:['Entrance complete','Pass this round'],c:-1,e:'Dramatic cape movement is encouraged.',d:2,cat:'Silly Challenges',kid:true,fun:true}
+ ],
+ most:[
+ {q:'Who is most likely to scream first at a tiny spider?',a:['Me','The other player','Both of us','Neither of us'],c:-1,e:'Point at your choice together. If you match, both score a point!',d:1,cat:'Most Likely To',kid:true,fun:true},
+ {q:'Who would survive longest in a haunted house?',a:['Me','The other player','Both of us','Neither of us'],c:-1,e:'Explain your survival strategy.',d:2,cat:'Most Likely To',kid:true,fun:true},
+ {q:'Who is most likely to eat all the Halloween candy before the party?',a:['Me','The other player','Both of us','Neither of us'],c:-1,e:'Honesty earns a bonus laugh.',d:1,cat:'Most Likely To',kid:true,fun:true},
+ {q:'Who would be the better detective in a spooky mystery?',a:['Me','The other player','Both of us','Neither of us'],c:-1,e:'Name one clue you would look for.',d:2,cat:'Most Likely To',kid:true,fun:true},
+ {q:'Who is most likely to accidentally become friends with a monster?',a:['Me','The other player','Both of us','Neither of us'],c:-1,e:'Bonus point if you invent the monster’s name.',d:2,cat:'Most Likely To',kid:true,fun:true},
+ {q:'Who would make the best mad scientist?',a:['Me','The other player','Both of us','Neither of us'],c:-1,e:'Give your lab a ridiculous name.',d:3,cat:'Most Likely To',kid:false,fun:true}
+ ],
+ taboo:[
+ {q:'Describe a PUMPKIN without saying: orange, jack-o-lantern, vegetable, seed.',a:['Got it','Reveal a hint'],c:-1,e:'Hint: It grows on a vine and is often carved in October.',d:2,cat:'Taboo Clues',kid:true,fun:true},
+ {q:'Describe a VAMPIRE without saying: blood, Dracula, fangs, bat.',a:['Got it','Reveal a hint'],c:-1,e:'Hint: A legendary night creature.',d:3,cat:'Taboo Clues',kid:false,fun:true},
+ {q:'Describe a GHOST without saying: dead, white, spirit, boo.',a:['Got it','Reveal a hint'],c:-1,e:'Hint: Something you might see in a haunted house.',d:2,cat:'Taboo Clues',kid:true,fun:true},
+ {q:'Describe a WITCH without saying: broom, magic, hat, spell.',a:['Got it','Reveal a hint'],c:-1,e:'Hint: A character often found in fairy tales.',d:2,cat:'Taboo Clues',kid:true,fun:true},
+ {q:'Describe a SPIDER without saying: web, eight, legs, crawl.',a:['Got it','Reveal a hint'],c:-1,e:'Hint: A small creature that may make you jump.',d:3,cat:'Taboo Clues',kid:true,fun:true},
+ {q:'Describe a WEREWOLF without saying: wolf, moon, transform, howl.',a:['Got it','Reveal a hint'],c:-1,e:'Hint: A human-shaped creature from folklore.',d:4,cat:'Taboo Clues',kid:false,fun:true}
+ ],
+ phone:[
+ {q:'Show or say: What is the last emoji you used?',a:['Shared it','Skip'],c:-1,e:'Everyone else guesses why it was your last emoji.',d:1,cat:'Phone Party',kid:true,fun:true},
+ {q:'Who has the most apps on their phone?',a:['Me','The other player','Same amount','Not sure'],c:-1,e:'Check only if everyone is comfortable sharing.',d:1,cat:'Phone Party',kid:true,fun:true},
+ {q:'Find a photo that makes you smile (you do not need to show it).',a:['Found one','Skip'],c:-1,e:'Tell the story behind it if you want.',d:1,cat:'Phone Party',kid:true,fun:true},
+ {q:'What is your most-used app this week?',a:['Shared it','Skip'],c:-1,e:'The other player gets one guess first.',d:2,cat:'Phone Party',kid:true,fun:true},
+ {q:'Find the oldest photo you feel comfortable sharing.',a:['Found one','Skip'],c:-1,e:'Bonus point if it has a funny story.',d:3,cat:'Phone Party',kid:true,fun:true}
+ ],
+ drink:[
+ {q:'Smile if you have ever watched a spooky movie with a pillow ready.',a:['That is me','Not me'],c:-1,e:'Keep it family-friendly: use smiles, points, or candy—not alcohol.',d:1,cat:'Smile If…',kid:true,fun:true},
+ {q:'Smile if you have ever pretended not to be scared.',a:['That is me','Not me'],c:-1,e:'If you smiled, share your best brave face.',d:1,cat:'Smile If…',kid:true,fun:true},
+ {q:'Smile if you have ever forgotten why you walked into a room.',a:['That is me','Not me'],c:-1,e:'A very human mystery.',d:1,cat:'Smile If…',kid:true,fun:true},
+ {q:'Smile if you would adopt a friendly little ghost.',a:['Absolutely','No thanks'],c:-1,e:'What would you name it?',d:2,cat:'Smile If…',kid:true,fun:true},
+ {q:'Smile if you have ever blamed a strange noise on someone else.',a:['Guilty','Innocent'],c:-1,e:'The haunted house jury is listening.',d:2,cat:'Smile If…',kid:true,fun:true},
+ {q:'Smile if you would explore a mysterious door with a warning sign.',a:['I would','Not a chance'],c:-1,e:'Tell us why. Curiosity or common sense?',d:3,cat:'Smile If…',kid:true,fun:true}
+ ],
+ memory:[
+ {m:'CANDLE · BAT · MOON · KEY · APPLE',q:'Which word was third?',a:['MOON','BAT','KEY','APPLE'],c:0,e:'Memory trick: picture each object in a little story.',d:2,cat:'Memory',kid:true},
+ {m:'🦇  🎃  👻  🕷️',q:'Which came second?',a:['Ghost','Pumpkin','Spider','Bat'],c:1,e:'The pumpkin was second.',d:1,cat:'Memory',kid:true},
+ {q:'A witch had 3 black cats and adopted 2 more. How many cats?',a:['4','5','6','7'],c:1,e:'3 + 2 = 5 cats.',d:1,cat:'Memory',kid:true},
+ {m:'7 · 2 · 9 · 4 · 1',q:'What was the fourth number?',a:['9','4','2','1'],c:1,e:'The fourth number was 4.',d:2,cat:'Memory',kid:true},
+ {m:'SPIDER · CANDLE · PUMPKIN · BROOM',q:'Which one was NOT in the set?',a:['Spider','Candle','Pumpkin','Dolphin'],c:3,e:'Dolphin was not in the set (the fourth word was BROOM).',d:2,cat:'Memory',kid:true},
+ {m:'OWL · HAT · CAKE · BROOM',q:'Which word came right after HAT?',a:['CAKE','OWL','BROOM','HAT'],c:0,e:'The order was OWL, HAT, CAKE, BROOM.',d:2,cat:'Memory',kid:true},
+ {m:'🎃 🎃 👻 🎃 👻',q:'How many pumpkins were there?',a:['3','2','4','5'],c:0,e:'There were 3 pumpkins and 2 ghosts.',d:2,cat:'Memory',kid:true},
+ {m:'3 · 8 · 1 · 6 · 5 · 9',q:'What was the last number?',a:['9','5','6','3'],c:0,e:'The sequence ended with 9.',d:3,cat:'Memory',kid:true},
+ {m:'RED door · BLUE gate · GREEN window · BLACK cat',q:'What colour was the gate?',a:['Blue','Red','Green','Black'],c:0,e:'It was the BLUE gate.',d:3,cat:'Memory',kid:true}
+ ]
+};
+const TYPES=[
+ ['trivia','🧠','Spooky Trivia','Multiple-choice knowledge test','Knowledge'],
+ ['fiction','🔎','Fact or Fiction','Separate creepy myths from real facts','Knowledge'],
+ ['riddles','🗝️','Midnight Riddles','Solve brain-teasing mysteries','Brain'],
+ ['scramble','🔤','Word Scramble','Untangle spooky words','Brain'],
+ ['movie','🎬','Horror Movie Logic','Spot the classic horror tropes','Knowledge'],
+ ['choice','⚖️','Would You Rather','Debate delightfully spooky choices','Social'],
+ ['most','👉','Most Likely To','Make predictions about each other','Social'],
+ ['taboo','🗣️','Taboo Clues','Explain words without forbidden clues','Social'],
+ ['dares','🎭','Silly Challenges','Act, invent, and laugh together','Action'],
+ ['phone','📱','Phone Party','Optional phone-friendly prompts','Social'],
+ ['drink','😊','Smile If…','Low-pressure party icebreakers','Social'],
+ ['memory','🧩','Monster Memory','Test your memory and attention','Brain']
+];
+const DIFFS={easy:1,medium:2,hard:3,nightmare:4};
+function allQuestions(){return Object.entries(BANK).flatMap(([key,arr])=>arr.map((q,i)=>({...q,id:key+'-'+i,type:key})));}
+function allowed(q){if(state.age==='kids'&&!q.kid)return false;if(state.category!=='all'&&state.category!==q.type)return false;if(state.difficulty!=='mixed'&&q.d!==DIFFS[state.difficulty])return false;return true}
+function shuffle(a,rnd=Math.random){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function dayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function seeded(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return (h>>>0)/4294967296}}
+function loadStats(){try{return JSON.parse(localStorage.getItem('had_stats')||'{}')}catch{return {}}}
+function saveStats(s){try{localStorage.setItem('had_stats',JSON.stringify(s))}catch{}}
+function updateStats(){let s=loadStats();$('#bestScore').textContent=s.best||0;$('#streak').textContent=s.streak||0;$('#gamesPlayed').textContent=s.games||0}
+function toast(t){const el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.style.display='none',2200)}
+function setPage(p){if(p==='play'&&(!state.deck.length||state.round>=state.deck.length))return startGame('solo');state.page=p;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));render()}
+function home(){return `<div class="hero"><div><div class="eyebrow">12 mini-games • 4 difficulty levels • endless remixes</div><h2>One night.<br>Endless scares.</h2><p>Trivia, riddles, silly challenges, memory tests and party prompts. Play alone, take turns on one device, or make it a family-versus-family showdown.</p><div class="actions"><button class="primary" onclick="startGame('solo')">🎮 Start a game</button><button class="secondary" onclick="setPage('duel')">👥 Play with someone</button></div></div><div class="hero-art">🎃👻</div></div>
+<div class="section-head"><div><h3>Pick your kind of spooky</h3><p>Every round mixes new questions and activities.</p></div><button class="soft" onclick="setPage('categories')">View all games →</button></div>
+<div class="cards">${TYPES.slice(0,6).map(t=>card(t)).join('')}</div>
+<div class="panel"><h3>⚙️ Make it your game</h3>${settingsForm()}<p class="help">Your preferences stay on this device. You can change them any time.</p></div>`}
+function card(t){return `<div class="game-card"><div class="icon">${t[1]}</div><h4>${t[2]}</h4><p>${t[3]}</p><div class="card-bottom"><span class="tag">${t[4]}</span><button class="secondary" onclick="startGame('${t[0]}')">Play ↗</button></div></div>`}
+function settingsForm(){return `<div class="settings-grid"><div class="field"><label>Players</label><select onchange="state.mode=this.value"><option value="solo" ${state.mode==='solo'?'selected':''}>Solo score chase</option><option value="pass" ${state.mode==='pass'?'selected':''}>2 players • pass one device</option><option value="team" ${state.mode==='team'?'selected':''}>Family / team mode</option></select></div><div class="field"><label>Difficulty</label><select onchange="state.difficulty=this.value"><option value="mixed" ${state.difficulty==='mixed'?'selected':''}>Mixed (recommended)</option><option value="easy" ${state.difficulty==='easy'?'selected':''}>Easy • cozy</option><option value="medium" ${state.difficulty==='medium'?'selected':''}>Medium • curious</option><option value="hard" ${state.difficulty==='hard'?'selected':''}>Hard • spooky</option><option value="nightmare" ${state.difficulty==='nightmare'?'selected':''}>Nightmare • expert</option></select></div><div class="field"><label>Age & scare level</label><select onchange="state.age=this.value"><option value="family" ${state.age==='family'?'selected':''}>Family • all tones</option><option value="kids" ${state.age==='kids'?'selected':''}>Kid-friendly • gentle only</option><option value="adult" ${state.age==='adult'?'selected':''}>Older teens & adults</option></select></div><div class="field"><label>Rounds per game</label><select onchange="state.rounds=+this.value"><option value="5" ${state.rounds===5?'selected':''}>5 • quick</option><option value="10" ${state.rounds===10?'selected':''}>10 • standard</option><option value="20" ${state.rounds===20?'selected':''}>20 • long session</option><option value="30" ${state.rounds===30?'selected':''}>30 • party marathon</option><option value="0" ${state.rounds===0?'selected':''}>Endless mode</option></select></div></div>`}
+function categories(){return `<div class="eyebrow">The game library</div><h2 style="font-size:34px;margin:8px 0">Choose your challenge</h2><p style="color:var(--muted)">Play a single game type, or mix everything together for a different session every time.</p><div class="cards" style="margin-top:20px">${TYPES.map(t=>card(t)).join('')}</div><div class="panel"><h3>🎲 Random game</h3><p style="color:var(--muted)">Can't decide? Let the haunted house pick a category for you.</p><button class="primary" onclick="startGame('random')">Surprise me</button></div>`}
+function duel(){return `<div class="eyebrow">Pass-and-play mode</div><h2 style="font-size:34px;margin:8px 0">Two players. One device.</h2><p style="color:var(--muted)">Perfect for a parent and child, partners, siblings, or friends. Take turns on the same screen—no second phone needed.</p><div class="panel"><h3>👥 Set up your players</h3><div class="settings-grid"><div class="field"><label>Player 1</label><input id="p1" maxlength="20" value="${escapeHtml(state.players[0])}" placeholder="e.g. Mum"></div><div class="field"><label>Player 2</label><input id="p2" maxlength="20" value="${escapeHtml(state.players[1])}" placeholder="e.g. Alex"></div></div><div class="actions"><button class="primary" onclick="savePlayers();state.mode='pass';startGame('all')">Start head-to-head</button><button class="secondary" onclick="savePlayers();state.mode='team';startGame('all')">Play as a team</button></div><p class="help">In head-to-head, the active player answers each round. Correct answers earn points. For social prompts, both players can agree on a winner or award themselves a point for participating.</p></div><div class="two-col"><div class="player-card"><h4>🧡 ${escapeHtml(state.players[0])}</h4><p style="color:var(--muted)">Take turns answering. Keep it friendly and celebrate good guesses.</p></div><div class="player-card"><h4>💜 ${escapeHtml(state.players[1])}</h4><p style="color:var(--muted)">The other player gets the next turn. Highest score wins the bragging rights.</p></div></div>`}
+function savePlayers(){state.players=[$('#p1')?.value.trim()||'Player 1',$('#p2')?.value.trim()||'Player 2'];if(!state.players[0])state.players[0]='Player 1';if(!state.players[1])state.players[1]='Player 2'}
+function daily(){return `<div class="eyebrow">A new challenge every day</div><h2 style="font-size:34px;margin:8px 0">🌙 Daily Haunted Challenge</h2><p style="color:var(--muted)">Seven rounds picked for today’s date. Everyone who plays today gets the same seven rounds, so compare scores with friends. A new set appears at midnight.</p><div class="panel"><div style="font-size:52px">🕯️ 🧠 🗝️</div><h3>Today's 7-round challenge</h3><p style="color:var(--muted)">A family-friendly mix of trivia, riddles, memory, word scrambles and silly challenges.</p><button class="primary" onclick="startGame('daily')">Begin today's challenge</button><p class="help">Challenge date: ${dayKey()}. Scores stay in this browser.</p></div>`}
+function achievements(){let s=loadStats(),ach=[['🎃','First Fright','Play your first game',s.games>=1],['🧠','Brainy Bat','Score 10 points in one session',(s.best||0)>=10],['🏆','Monster Champion','Score 25 points in one session',(s.best||0)>=25],['🔥','On a Roll','Get 3 answers right in a row',(s.streak||0)>=3],['👥','Dynamic Duo','Play a two-player game',s.duo||false],['🌙','Night Owl','Play 30 rounds total',(s.totalRounds||0)>=30]];return `<div class="eyebrow">Your progress</div><h2 style="font-size:34px;margin:8px 0">Achievements</h2><p style="color:var(--muted)">Every round counts. Come back to unlock them all.</p><div class="cards" style="margin-top:20px">${ach.map(a=>`<div class="game-card" style="min-height:145px;opacity:${a[3]?1:.55}"><div class="icon">${a[0]}</div><h4>${a[1]} ${a[3]?'✓':'🔒'}</h4><p>${a[2]}</p></div>`).join('')}</div><div class="panel"><h3>📈 Your lifetime stats</h3><div class="scoreboard"><div class="score"><span>Best session</span><strong>${s.best||0}</strong></div><div class="score"><span>Games played</span><strong>${s.games||0}</strong></div><div class="score"><span>Total rounds</span><strong>${s.totalRounds||0}</strong></div></div><button class="danger" onclick="resetStats()">Reset progress</button></div>`}
+function how(){return `<div class="eyebrow">Quick rulebook</div><h2 style="font-size:34px;margin:8px 0">How to play</h2><div class="panel"><h3>🎮 Your first game</h3><ol><li>Choose Solo, Two Players, or Team Mode.</li><li>Pick a difficulty, age setting and round length.</li><li>Answer questions, solve riddles, or complete the party prompt.</li><li>Earn points, build a streak and unlock achievements.</li><li>Come back whenever you like—questions are shuffled each session.</li></ol></div><div class="panel"><h3>👨‍👩‍👧 Family-friendly play</h3><p>Choose <b>Kid-friendly</b> for gentle prompts and no adult-oriented themes. A parent can read questions aloud for younger children. Phone Party prompts are optional: nobody has to show private photos, messages, or personal information.</p></div><div class="panel"><h3>⭐ Scoring</h3><ul><li>Easy correct answer: 1 point.</li><li>Medium: 2 points.</li><li>Hard: 3 points.</li><li>Nightmare: 4 points.</li><li>Social prompts and challenges: award points for participation, creativity, or a group vote.</li><li>Every third correct answer in a row earns +1 bonus point.</li></ul></div><div class="panel"><h3>🔁 Replayability</h3><p>There are multiple game types, shuffled question order, four difficulty levels, selectable age settings, round lengths from 5 to endless, daily challenges, local stats and two-player scoring. More rounds can be added to the question bank over time.</p></div>`}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function startGame(type){
+ if(type==='random'){type=TYPES[Math.floor(Math.random()*TYPES.length)][0]}
+ state.gameType=type;state.current=0;state.round=0;state.score=0;state.streak=0;state.bestStreak=0;state.answered=false;state.duelScores=[0,0];
+ let pool=allQuestions().filter(q=>{
+  if(type==='all'||type==='daily')return allowed(q);
+  if(type==='solo')return allowed(q);
+  return q.type===type&&allowed(q)
+ });
+ if(!pool.length){toast('No questions match those filters—try Mixed difficulty.');state.page='home';render();return}
+ if(type==='daily'){const r=seeded('had-'+dayKey());pool=allQuestions().filter(q=>q.kid&&['trivia','riddles','memory','fiction','scramble','dares'].includes(q.type));state.deck=shuffle(pool,r).slice(0,7)}
+ else state.deck=shuffle(pool);
+ if(type!=='daily'&&state.rounds>0)state.deck=state.deck.slice(0,Math.min(state.rounds,state.deck.length));
+ if(state.deck.length===0){toast('No rounds available for those settings.');return}
+ state.page='play';document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='play'));render()
+}
+function points(q){return q.fun?1:(q.d||1)}
+function playPage(){
+ if(state.round>=state.deck.length)return resultPage();
+ let q=state.deck[state.round],p=state.mode==='pass'?state.players[state.round%2]:(state.mode==='team'?'Team':state.players[0]);
+ let typeName=TYPES.find(t=>t[0]===q.type)?.[2]||q.cat;
+ let total=state.deck.length,progress=(state.round/total)*100;
+ let answers=q.a.map((a,i)=>`<button class="answer" id="ans${i}" onclick="answer(${i})">${escapeHtml(a)}</button>`).join('');
+ let memo=q.m?`<div id="memo" class="memo"><div class="eyebrow">Memorise this</div><div class="memo-items">${escapeHtml(q.m)}</div><button class="primary" onclick="hideMemo()">I’m ready — hide it</button></div>`:'';
+ return `<div class="play-top"><div><div class="eyebrow">${state.mode==='pass'?'Pass-and-play':state.mode==='team'?'Team challenge':'Solo challenge'}</div><h2 style="margin:5px 0">${escapeHtml(typeName)}</h2></div><div class="pill">Round <b>${state.round+1}</b> / ${total}</div></div><div class="progress"><span style="width:${progress}%"></span></div><div class="q-meta"><span class="tag">${q.d===1?'EASY':q.d===2?'MEDIUM':q.d===3?'HARD':'NIGHTMARE'}</span><span>${state.mode==='pass'?'🎯 Up now: '+escapeHtml(p):'✨ '+points(q)+' point'+(points(q)>1?'s':'')+' available'}</span>${state.streak>=2?'<span class="tag">🔥 '+state.streak+' streak</span>':''}</div><div class="question-box"><div style="font-size:36px">${q.fun?'🎭':'🕯️'}</div>${memo}<div id="qa" ${q.m?'hidden':''}><h2>${escapeHtml(q.q)}</h2><div class="answers">${answers}</div></div><div id="feedback"></div></div><div class="play-bottom"><button class="soft" onclick="quitGame()">← Leave game</button><div><span class="pill">Score <b id="liveScore">${state.score}</b></span> <button class="primary" id="nextBtn" onclick="nextRound()" disabled>${state.round===total-1?'See results':'Next round →'}</button></div></div>`
+}
+function hideMemo(){$('#memo').remove();$('#qa').hidden=false}
+function answer(i){
+ if(state.answered)return;state.answered=true;let q=state.deck[state.round],isCorrect=q.c<0?true:i===q.c;
+ if(q.c>=0){document.querySelectorAll('.answer').forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add('correct');else if(j===i)b.classList.add('wrong')})}
+ else {document.querySelectorAll('.answer').forEach(b=>b.disabled=true)}
+ let earned=0;
+ if(q.c<0){earned=1;if(i===1&&q.type==='dares')earned=0;}
+ else if(isCorrect){earned=points(q);state.streak++;state.bestStreak=Math.max(state.bestStreak||0,state.streak);if(state.streak>0&&state.streak%3===0)earned+=1}
+ else state.streak=0;
+ state.score+=earned;
+ if(state.mode==='pass')state.duelScores[state.round%2]+=earned;else if(state.mode==='team')state.duelScores[0]+=earned;
+ let fb=$('#feedback');fb.className='feedback';fb.innerHTML=`<strong>${q.c<0?(earned?'Nice! +'+earned+' point':'No points this time'):isCorrect?'Correct! +'+earned+' point'+(earned===1?'':'s'):'Not quite.'}</strong><br>${escapeHtml(q.e||'Well played!')}`;
+ $('#nextBtn').disabled=false;if($('#liveScore'))$('#liveScore').textContent=state.score;$('#nextBtn').classList.remove('secondary');$('#nextBtn').textContent=state.round===state.deck.length-1?'See results':'Next round →';
+}
+function nextRound(){if(!state.answered)return;state.round++;state.answered=false;
+ if(state.rounds===0 && state.round>=state.deck.length){
+   let extra=shuffle(allQuestions().filter(allowed));
+   if(state.gameType!=='all'&&state.gameType!=='daily'&&state.gameType!=='solo')extra=extra.filter(q=>q.type===state.gameType);
+   state.deck=state.deck.concat(extra);
+ }
+ render()}
+function quitGame(){if(confirm('Leave this game? Your current session score will not be saved.')){state.page='home';render()}}
+function resultPage(){
+ let s=loadStats();s.games=(s.games||0)+1;s.totalRounds=(s.totalRounds||0)+state.deck.length;s.best=Math.max(s.best||0,state.score);s.streak=Math.max(s.streak||0,state.bestStreak||0);if(state.mode==='pass')s.duo=true;saveStats(s);updateStats();
+ let duelText=state.mode==='pass'?`<div class="two-col"><div class="player-card"><h4>🧡 ${escapeHtml(state.players[0])}</h4><div class="pts">${state.duelScores[0]}</div><p style="color:var(--muted)">points</p></div><div class="player-card"><h4>💜 ${escapeHtml(state.players[1])}</h4><div class="pts">${state.duelScores[1]}</div><p style="color:var(--muted)">points</p></div></div><p style="text-align:center;color:var(--gold);font-weight:900">${state.duelScores[0]===state.duelScores[1]?'It’s a tie! Spooky teamwork!':escapeHtml(state.players[state.duelScores[0]>state.duelScores[1]?0:1])+' wins the bragging rights!'} </p>`:'';
+ let rating=state.score>=25?'Legendary Monster!':state.score>=15?'Master of the Macabre!':state.score>=8?'Brave Little Bat!':'Freshly Haunted!';
+ return `<div class="empty"><div class="big">🏆</div><div class="eyebrow">Session complete</div><h2>${rating}</h2><p>You made it through ${state.deck.length} rounds. Ready for another haunted adventure?</p></div><div class="scoreboard"><div class="score"><span>Your session score</span><strong>${state.score}</strong></div><div class="score"><span>Best streak this game</span><strong>${state.bestStreak||0} 🔥</strong></div><div class="score"><span>Personal best</span><strong>${s.best}</strong></div></div>${duelText}<div class="actions" style="justify-content:center"><button class="primary" onclick="startGame('all')">🔁 Play again</button><button class="secondary" onclick="setPage('categories')">Choose another game</button><button class="soft" onclick="setPage('achievements')">View achievements</button></div><div class="panel"><h3>🕯️ Session recap</h3><div class="history-row"><span>Mode</span><b>${state.mode==='pass'?'Two players':state.mode==='team'?'Team':'Solo'}</b></div><div class="history-row"><span>Difficulty</span><b>${state.difficulty==='mixed'?'Mixed':state.difficulty}</b></div><div class="history-row"><span>Game types</span><b>${[...new Set(state.deck.map(q=>q.cat))].length}</b></div><div class="history-row"><span>Rounds played</span><b>${state.deck.length}</b></div></div>`
+}
+function render(){
+ const main=$('#main');
+ if(state.page==='home')main.innerHTML=home();
+ else if(state.page==='categories')main.innerHTML=categories();
+ else if(state.page==='duel')main.innerHTML=duel();
+ else if(state.page==='daily')main.innerHTML=daily();
+ else if(state.page==='achievements')main.innerHTML=achievements();
+ else if(state.page==='how')main.innerHTML=how();
+ else if(state.page==='play')main.innerHTML=state.round>=state.deck.length?resultPage():playPage();
+ updateStats();document.body.classList.toggle('playing',state.page==='play');
+}
+function resetStats(){if(confirm('Reset all scores and achievements on this device?')){try{localStorage.removeItem('had_stats')}catch{};updateStats();render();toast('Progress reset.')}}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));
+render();
+</script>
+</body></html>
