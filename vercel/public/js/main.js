@@ -6,6 +6,7 @@ import { initImages } from "./images.js";
 import { initUpscale } from "./upscale.js";
 import { initChat } from "./chat.js";
 import { initAsk } from "./ask.js";
+import { initMeta } from "./meta.js";
 
 const KEY = "allapp_token";
 const store = {
@@ -93,6 +94,7 @@ initImages();
 initUpscale();
 initChat(() => TOKEN);
 initAsk(() => TOKEN);
+initMeta();
 
 // Boot: URL token (bookmark) wins, then this browser's saved token.
 (async () => {

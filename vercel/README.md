@@ -42,6 +42,10 @@ vercel/
   specific key, set `AI_GATEWAY_API_KEY`. The optional `CHAT_MODEL` changes
   the model (default `stealth/pixel-canary`). `/api/chat` needs an
   activation token, so strangers can't spend your credits.
+- **Refresh Metadata:** runs fully in the browser. Photos are re-encoded to a
+  clean JPEG with a new EXIF block (phone make/model, Saudi GPS, Saudi time
+  +03:00); videos are remuxed with ffmpeg.wasm (video copied, H.264 SEI notes
+  dropped, audio re-encoded to AAC) with iPhone QuickTime or Samsung tags.
 - **Web Answers:** set `PERPLEXITY_API_KEY` (create one at
   https://console.perplexity.ai) as a Vercel env var. `/api/ask` calls the
   Perplexity Agent API with the `web_search` tool and returns the answer

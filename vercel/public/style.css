@@ -47,7 +47,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 60px; }
 .metric b { font-size: 20px; }
 
 input, select, button { font: inherit; }
-input[type=text], input:not([type]), input[type=number], select {
+input[type=text], input:not([type]), input[type=number], input[type=datetime-local], select {
   background: var(--bg2); color: #fff; border: 1px solid #333; border-radius: 8px; padding: 9px 12px; width: 100%;
 }
 input:focus, select:focus { outline: 2px solid var(--pink); outline-offset: 0; }

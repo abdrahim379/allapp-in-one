@@ -33,7 +33,7 @@
   <main id="app" hidden>
     <header class="hero">
       <h1>🚀 ALL APP IN ONE</h1>
-      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler · AI chat · Web answers</p>
+      <p class="muted">TikTok tools · Image optimizer · WebP converter · Video upscaler · Metadata refresh · AI chat · Web answers</p>
     </header>
 
     <nav class="tabs" role="tablist">
@@ -42,6 +42,7 @@
       <button role="tab" data-tab="vg">🎛️ Variant Generator</button>
       <button role="tab" data-tab="img">🖼️ Image Optimizer</button>
       <button role="tab" data-tab="webp">🔄 → WebP</button>
+      <button role="tab" data-tab="md">📍 Refresh Metadata</button>
       <button role="tab" data-tab="up">🎬 Video Upscaler</button>
       <button role="tab" data-tab="chat">💬 AI Chat</button>
       <button role="tab" data-tab="ask">🔎 Web Answers</button>
@@ -57,6 +58,7 @@
         <div class="tool-card" data-go="img"><h3>🖼️ Image Optimizer <span class="badge">NEW</span></h3><p>Upscale images 1.5×–4× using LANCZOS resampling + smart sharpening. Keep quality, increase resolution.</p></div>
         <div class="tool-card" data-go="webp"><h3>🔄 → WebP Converter <span class="badge">NEW</span></h3><p>Convert PNG, JPG, BMP, TIFF, GIF → WebP. Batch processing, quality control, lossless mode.</p></div>
         <div class="tool-card" data-go="up"><h3>🎬 Video Upscaler <span class="badge">NEW</span></h3><p>Upscale videos to 720p / 1080p / 4K with ffmpeg LANCZOS + optional sharpen + denoise.</p></div>
+        <div class="tool-card" data-go="md"><h3>📍 Refresh Metadata <span class="badge">NEW</span></h3><p>Remove all old metadata from photos and videos and give each file new phone metadata: a phone model, a location in Saudi Arabia and a fresh date in Saudi time.</p></div>
         <div class="tool-card" data-go="chat"><h3>💬 AI Chat <span class="badge">NEW</span></h3><p>Chat with the stealth/pixel-canary model through the Vercel AI Gateway, with answers streamed live.</p></div>
         <div class="tool-card" data-go="ask"><h3>🔎 Web Answers <span class="badge">NEW</span></h3><p>Ask anything and get a current answer searched on the web by Perplexity, with links to its sources. Ask follow-ups in the same thread.</p></div>
       </div>
@@ -210,6 +212,21 @@
       <button class="btn primary wide" id="wp-go">🔄 Convert All → WebP</button>
       <div id="wp-msg" class="msg"></div>
       <div id="wp-out"></div>
+    </section>
+
+    <!-- REFRESH METADATA -->
+    <section class="panel" data-panel="md" hidden>
+      <h2>📍 Refresh Metadata</h2>
+      <p class="muted">Every upload comes out as a <b>new file</b>: all old metadata (date, device, GPS, editing apps, names) is removed, then fresh phone metadata is written: the phone below, a location in <b>Saudi Arabia</b> (a different spot in the city for each file) and a date in <b>Saudi time (+03:00)</b>. Videos keep their exact picture quality (the video is not re-encoded; the sound is saved as a fresh AAC track). Photos are saved as a clean JPEG. Everything runs in your browser; nothing is uploaded.</p>
+      <div class="grid2">
+        <label>Saudi city<select id="md-city"><option value="riyadh">Riyadh</option><option value="jeddah">Jeddah</option><option value="makkah">Makkah</option><option value="madinah">Madinah</option><option value="dammam">Dammam</option><option value="khobar">Al Khobar</option><option value="taif">Taif</option><option value="abha">Abha</option><option value="tabuk">Tabuk</option><option value="buraydah">Buraydah</option><option value="random">🎲 Random city for each file</option></select></label>
+        <label>Phone<select id="md-phone"><option value="ip16pm">iPhone 16 Pro Max</option><option value="ip16p">iPhone 16 Pro</option><option value="ip15pm">iPhone 15 Pro Max</option><option value="ip15">iPhone 15</option><option value="s24u">Samsung Galaxy S24 Ultra</option><option value="s23">Samsung Galaxy S23</option><option value="random">🎲 Random phone for each file</option></select></label>
+        <label>Date and time (Saudi time)<input type="datetime-local" id="md-when"><span class="tiny">Leave empty for “just now”.</span></label>
+      </div>
+      <div class="drop"><input type="file" id="md-files" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,video/mp4,video/quicktime,.mp4,.mov,.m4v" multiple><span>Upload photos (JPG · PNG · WebP) and videos (MP4 · MOV)</span></div>
+      <button class="btn primary wide" id="md-go">📍 Refresh All Metadata</button>
+      <div id="md-msg" class="msg"></div>
+      <div id="md-out"></div>
     </section>
 
     <!-- VIDEO UPSCALER -->
